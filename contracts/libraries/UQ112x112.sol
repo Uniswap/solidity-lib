@@ -1,0 +1,50 @@
+pragma solidity >=0.4.0;
+
+// a library for handling binary fixed point numbers (https://en.wikipedia.org/wiki/Q_(number_format))
+library FixedPoint {
+    // range: [0, 2**112 - 1]
+    // resolution: 1 / 2**112
+    struct q112x112 {
+        uint224 _x;
+    }
+
+    // range: [0, 2**144 - 1]
+    // resolution: 1 / 2**112
+    struct q144x112 {
+        uint _x;
+    }
+
+    uint8 private constant RESOLUTION = 112;
+
+    // encode a uint112 as a UQ112x112
+    function encode(uint112 x) internal pure returns (q112x112 memory) {
+        return q112x112(uint224(x) << RESOLUTION);
+    }
+
+    // encodes a uint144 as a UQ144x112
+    function encode(uint144 x) internal pure returns (q144x112 memory) {
+        return q144x112(uint256(x) << RESOLUTION);
+    }
+
+    // divide a UQ112x112 by a uint112, returning a UQ112x112
+    function uqdiv(q112x112 memory self, uint112 y) internal pure returns (q112x112 memory) {
+        require(y != 0, 'FixedPoint: DIV_BY_ZERO');
+        return q112x112(self._x / uint224(y));
+    }
+
+    // multiply a UQ112x112 by a uint, returning a UQ144x112
+    function uqmul(q112x112 memory self, uint y) internal pure returns (q144x112 memory) {
+        uint z;
+        require(y == 0 || (z = uint(self._x) * y) / y == uint(self._x), "FixedPoint: MULTIPLICATION_OVERFLOW");
+        return q144x112(z);
+    }
+
+    // decode a UQ112x112 in a uint container into a uint by truncating after the radix point
+    function decode(q112x112 memory self) internal pure returns (uint112) {
+        return uint112(self._x >> RESOLUTION);
+    }
+
+    function decode(q144x112 memory self) internal pure returns (uint144) {
+        return uint144(self._x >> RESOLUTION);
+    }
+}
