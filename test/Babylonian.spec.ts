@@ -33,7 +33,9 @@ describe('Babylonian', () => {
     })
 
     it('max uint256', async () => {
-      const expected = bigNumberify(2).pow(128).sub(1)
+      const expected = bigNumberify(2)
+        .pow(128)
+        .sub(1)
       expect(await babylonian.sqrt(MaxUint256)).to.eq(expected)
     })
   })
