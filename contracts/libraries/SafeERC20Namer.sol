@@ -41,18 +41,18 @@ library SafeERC20Namer {
 
     // uses a heuristic to produce a token name from the address
     // the heuristic returns the full hex of the address string in upper case
-    function addressToName(address token) pure internal returns (string memory) {
+    function addressToName(address token) pure private returns (string memory) {
         return AddressStringUtil.toAsciiString(token, 40);
     }
 
     // uses a heuristic to produce a token symbol from the address
     // the heuristic returns the first 6 hex of the address string in upper case
-    function addressToSymbol(address token) pure internal returns (string memory) {
+    function addressToSymbol(address token) pure private returns (string memory) {
         return AddressStringUtil.toAsciiString(token, 6);
     }
 
     // calls an external view token contract method that returns a symbol or name, and parses the output into a string
-    function callAndParseStringReturn(address token, bytes4 selector) view internal returns (string memory) {
+    function callAndParseStringReturn(address token, bytes4 selector) view private returns (string memory) {
         (bool success, bytes memory data) = token.staticcall(abi.encodeWithSelector(selector));
         // if not implemented, or returns empty data, return empty string
         if (!success || data.length == 0) {
@@ -61,11 +61,7 @@ library SafeERC20Namer {
         // bytes32 data always has length 32
         if (data.length == 32) {
             bytes32 decoded = abi.decode(data, (bytes32));
-            // if the data does not represent an empty string, use it
-            string memory result = bytes32ToString(decoded);
-            if (bytes(result).length > 0) {
-                return result;
-            }
+            return bytes32ToString(decoded);
         } else if (data.length > 64) {
             return abi.decode(data, (string));
         }
