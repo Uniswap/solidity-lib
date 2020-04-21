@@ -1,6 +1,7 @@
 # uniswap-lib
 
 [![Actions Status](https://github.com/Uniswap/uniswap-lib/workflows/CI/badge.svg)](https://github.com/Uniswap/uniswap-lib/actions)
+[![npm](https://img.shields.io/npm/v/@uniswap/lib)](https://unpkg.com/@uniswap/lib@latest/)
 
 Solidity libraries that are shared across Uniswap contracts. These libraries are focused on safety and gas efficiency.
 
