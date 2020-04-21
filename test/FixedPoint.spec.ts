@@ -44,7 +44,7 @@ describe('FixedPoint', () => {
     })
   })
 
-  describe('decode', () => {
+  describe('#decode', () => {
     it('shifts right by 112', async () => {
       expect(await fixedPoint.decode([bigNumberify(3).mul(Q112)])).to.eq(bigNumberify(3))
     })
@@ -53,7 +53,7 @@ describe('FixedPoint', () => {
     })
   })
 
-  describe('decode144', () => {
+  describe('#decode144', () => {
     it('shifts right by 112', async () => {
       expect(await fixedPoint.decode([bigNumberify(3).mul(Q112)])).to.eq(bigNumberify(3))
     })
@@ -63,7 +63,7 @@ describe('FixedPoint', () => {
     })
   })
 
-  describe('uqdiv', () => {
+  describe('#uqdiv', () => {
     it('correct division', async () => {
       expect((await fixedPoint.uqdiv([bigNumberify(3).mul(Q112)], bigNumberify(2)))[0]).to.eq(
         bigNumberify(3).mul(Q112).div(2)
@@ -74,7 +74,7 @@ describe('FixedPoint', () => {
     })
   })
 
-  describe('uqmul', () => {
+  describe('#uqmul', () => {
     it('correct multiplication', async () => {
       expect((await fixedPoint.uqmul([bigNumberify(3).mul(Q112)], bigNumberify(2)))[0]).to.eq(
         bigNumberify(3).mul(2).mul(Q112)
@@ -89,6 +89,20 @@ describe('FixedPoint', () => {
       expect((await fixedPoint.uqmul([bigNumberify(2).pow(112)], bigNumberify(2).pow(112)))[0]).to.eq(
         bigNumberify(2).pow(224)
       )
+    })
+  })
+
+  describe('#fraction', () => {
+    it('correct computation less than 1', async () => {
+      expect((await fixedPoint.fraction(4, 100))[0]).to.eq(bigNumberify(4).mul(Q112).div(100))
+    })
+
+    it('correct computation greater than 1', async () => {
+      expect((await fixedPoint.fraction(100, 4))[0]).to.eq(bigNumberify(100).mul(Q112).div(4))
+    })
+
+    it('fails with 0 denominator', async () => {
+      await expect(fixedPoint.fraction(bigNumberify(1), bigNumberify(0))).to.be.revertedWith('FixedPoint: DIV_BY_ZERO')
     })
   })
 })

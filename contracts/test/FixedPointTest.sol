@@ -17,6 +17,10 @@ contract FixedPointTest {
         return FixedPoint.uqdiv(self, y);
     }
 
+    function fraction(uint112 numerator, uint112 denominator) external pure returns (FixedPoint.q112x112 memory) {
+        return FixedPoint.fraction(numerator, denominator);
+    }
+
     // multiply a UQ112x112 by a uint, returning a UQ144x112
     function uqmul(FixedPoint.q112x112 calldata self, uint y) external pure returns (FixedPoint.q144x112 memory) {
         return FixedPoint.uqmul(self, y);
