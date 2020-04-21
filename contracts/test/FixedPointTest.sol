@@ -8,7 +8,7 @@ contract FixedPointTest {
         return FixedPoint.encode(x);
     }
 
-    function encode(uint144 x) external pure returns (FixedPoint.q144x112 memory) {
+    function encode144(uint144 x) external pure returns (FixedPoint.q144x112 memory) {
         return FixedPoint.encode144(x);
     }
 
@@ -27,7 +27,7 @@ contract FixedPointTest {
         return FixedPoint.decode(self);
     }
 
-    function decode(FixedPoint.q144x112 calldata self) external pure returns (uint144) {
-        return FixedPoint.decode(self);
+    function decode144(FixedPoint.q144x112 calldata self) external pure returns (uint144) {
+        return FixedPoint.decode144(self);
     }
 }

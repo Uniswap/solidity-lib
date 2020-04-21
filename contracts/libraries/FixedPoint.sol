@@ -46,7 +46,7 @@ library FixedPoint {
     }
 
     // decode a UQ144x112 into a uint144 by truncating after the radix point
-    function decode(q144x112 memory self) internal pure returns (uint144) {
+    function decode144(q144x112 memory self) internal pure returns (uint144) {
         return uint144(self._x >> RESOLUTION);
     }
 }
