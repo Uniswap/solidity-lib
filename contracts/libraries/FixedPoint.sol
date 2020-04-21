@@ -22,7 +22,7 @@ library FixedPoint {
     }
 
     // encodes a uint144 as a UQ144x112
-    function encode(uint144 x) internal pure returns (q144x112 memory) {
+    function encode144(uint144 x) internal pure returns (q144x112 memory) {
         return q144x112(uint256(x) << RESOLUTION);
     }
 
@@ -33,17 +33,19 @@ library FixedPoint {
     }
 
     // multiply a UQ112x112 by a uint, returning a UQ144x112
+    // reverts on overflow
     function uqmul(q112x112 memory self, uint y) internal pure returns (q144x112 memory) {
         uint z;
         require(y == 0 || (z = uint(self._x) * y) / y == uint(self._x), "FixedPoint: MULTIPLICATION_OVERFLOW");
         return q144x112(z);
     }
 
-    // decode a UQ112x112 in a uint container into a uint by truncating after the radix point
+    // decode a UQ112x112 into a uint112 by truncating after the radix point
     function decode(q112x112 memory self) internal pure returns (uint112) {
         return uint112(self._x >> RESOLUTION);
     }
 
+    // decode a UQ144x112 into a uint144 by truncating after the radix point
     function decode(q144x112 memory self) internal pure returns (uint144) {
         return uint144(self._x >> RESOLUTION);
     }

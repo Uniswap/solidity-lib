@@ -1,7 +1,6 @@
 import chai, { expect } from 'chai'
 import { Contract } from 'ethers'
 import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
-import { bigNumberify } from 'ethers/utils'
 import { AddressZero, MaxUint256 } from 'ethers/constants'
 
 import TransferHelperTest from '../build/TransferHelperTest.json'

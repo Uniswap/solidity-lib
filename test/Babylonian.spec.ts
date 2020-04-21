@@ -25,7 +25,7 @@ describe('Babylonian', () => {
     babylonian = await deployContract(wallet, BabylonianTest, [], overrides)
   })
 
-  describe('sqrt', () => {
+  describe('#sqrt', () => {
     it('works for 0-99', async () => {
       for (let i = 0; i < 100; i++) {
         expect(await babylonian.sqrt(i)).to.eq(Math.floor(Math.sqrt(i)))
