@@ -5,14 +5,14 @@ import { formatBytes32String } from 'ethers/utils'
 import { AddressZero } from 'ethers/constants'
 
 import SafeERC20NamerTest from '../build/SafeERC20NamerTest.json'
-import FakeCompliantERC20 from '../build/FakeCompliantERC20.json'
-import FakeNoncompliantERC20 from '../build/FakeNoncompliantERC20.json'
-import FakeOptionalERC20 from '../build/FakeOptionalERC20.json'
+import FakeCompliantERC20 from '../build/NamerTestFakeCompliantERC20.json'
+import FakeNoncompliantERC20 from '../build/NamerTestFakeNoncompliantERC20.json'
+import FakeOptionalERC20 from '../build/NamerTestFakeOptionalERC20.json'
 
 chai.use(solidity)
 
 const overrides = {
-  gasLimit: 9999999
+  gasLimit: 9999999,
 }
 
 // last byte in bytes32 strings is null terminator
@@ -23,7 +23,7 @@ describe('SafeERC20Namer', () => {
   const provider = new MockProvider({
     hardfork: 'istanbul',
     mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
-    gasLimit: 9999999
+    gasLimit: 9999999,
   })
   const [wallet] = provider.getWallets()
 

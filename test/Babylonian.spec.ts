@@ -9,14 +9,14 @@ import BabylonianTest from '../build/BabylonianTest.json'
 chai.use(solidity)
 
 const overrides = {
-  gasLimit: 9999999
+  gasLimit: 9999999,
 }
 
 describe('Babylonian', () => {
   const provider = new MockProvider({
     hardfork: 'istanbul',
     mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
-    gasLimit: 9999999
+    gasLimit: 9999999,
   })
   const [wallet] = provider.getWallets()
 
@@ -33,9 +33,7 @@ describe('Babylonian', () => {
     })
 
     it('max uint256', async () => {
-      const expected = bigNumberify(2)
-        .pow(128)
-        .sub(1)
+      const expected = bigNumberify(2).pow(128).sub(1)
       expect(await babylonian.sqrt(MaxUint256)).to.eq(expected)
     })
   })

@@ -14,11 +14,11 @@ contract SafeERC20NamerTest {
 }
 
 // does not implement name or symbol
-contract FakeOptionalERC20 {
+contract NamerTestFakeOptionalERC20 {
 }
 
 // complies with ERC20 and returns strings
-contract FakeCompliantERC20 {
+contract NamerTestFakeCompliantERC20 {
     string public name;
     string public symbol;
     constructor (string memory name_, string memory symbol_) public {
@@ -28,7 +28,7 @@ contract FakeCompliantERC20 {
 }
 
 // implements name and symbol but returns bytes32
-contract FakeNoncompliantERC20 {
+contract NamerTestFakeNoncompliantERC20 {
     bytes32 public name;
     bytes32 public symbol;
     constructor (bytes32 name_, bytes32 symbol_) public {
