@@ -73,4 +73,22 @@ describe('FixedPoint', () => {
       await expect(fixedPoint.uqdiv([bigNumberify(3).mul(Q112)], 0)).to.be.revertedWith('FixedPoint: DIV_BY_ZERO')
     })
   })
+
+  describe('uqmul', () => {
+    it('correct multiplication', async () => {
+      expect((await fixedPoint.uqmul([bigNumberify(3).mul(Q112)], bigNumberify(2)))[0]).to.eq(
+        bigNumberify(3).mul(2).mul(Q112)
+      )
+    })
+    it('overflow', async () => {
+      await expect(fixedPoint.uqmul([bigNumberify(1).mul(Q112)], bigNumberify(2).pow(144))).to.be.revertedWith(
+        'FixedPoint: MULTIPLICATION_OVERFLOW'
+      )
+    })
+    it('max of q112x112', async () => {
+      expect((await fixedPoint.uqmul([bigNumberify(2).pow(112)], bigNumberify(2).pow(112)))[0]).to.eq(
+        bigNumberify(2).pow(224)
+      )
+    })
+  })
 })
