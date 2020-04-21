@@ -11,7 +11,7 @@ const overrides = {
   gasLimit: 9999999,
 }
 
-describe('Babylonian', () => {
+describe('FixedPoint', () => {
   const provider = new MockProvider({
     hardfork: 'istanbul',
     mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
@@ -26,8 +26,7 @@ describe('Babylonian', () => {
 
   describe('#encode', () => {
     it('shifts left', async () => {
-      expect((await fixedPoint.encode('0x01'))[0])
-        .to.eq(bigNumberify('1').mul(bigNumberify(2).pow(112)).toHexString())
+      expect((await fixedPoint.encode('0x01'))[0]).to.eq(bigNumberify('1').mul(bigNumberify(2).pow(112)).toHexString())
     })
   })
 })
