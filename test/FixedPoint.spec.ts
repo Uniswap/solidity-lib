@@ -63,30 +63,30 @@ describe('FixedPoint', () => {
     })
   })
 
-  describe('#uqdiv', () => {
+  describe('#div', () => {
     it('correct division', async () => {
-      expect((await fixedPoint.uqdiv([bigNumberify(3).mul(Q112)], bigNumberify(2)))[0]).to.eq(
+      expect((await fixedPoint.div([bigNumberify(3).mul(Q112)], bigNumberify(2)))[0]).to.eq(
         bigNumberify(3).mul(Q112).div(2)
       )
     })
     it('throws for div by zero', async () => {
-      await expect(fixedPoint.uqdiv([bigNumberify(3).mul(Q112)], 0)).to.be.revertedWith('FixedPoint: DIV_BY_ZERO')
+      await expect(fixedPoint.div([bigNumberify(3).mul(Q112)], 0)).to.be.revertedWith('FixedPoint: DIV_BY_ZERO')
     })
   })
 
-  describe('#uqmul', () => {
+  describe('#mul', () => {
     it('correct multiplication', async () => {
-      expect((await fixedPoint.uqmul([bigNumberify(3).mul(Q112)], bigNumberify(2)))[0]).to.eq(
+      expect((await fixedPoint.mul([bigNumberify(3).mul(Q112)], bigNumberify(2)))[0]).to.eq(
         bigNumberify(3).mul(2).mul(Q112)
       )
     })
     it('overflow', async () => {
-      await expect(fixedPoint.uqmul([bigNumberify(1).mul(Q112)], bigNumberify(2).pow(144))).to.be.revertedWith(
+      await expect(fixedPoint.mul([bigNumberify(1).mul(Q112)], bigNumberify(2).pow(144))).to.be.revertedWith(
         'FixedPoint: MULTIPLICATION_OVERFLOW'
       )
     })
     it('max of q112x112', async () => {
-      expect((await fixedPoint.uqmul([bigNumberify(2).pow(112)], bigNumberify(2).pow(112)))[0]).to.eq(
+      expect((await fixedPoint.mul([bigNumberify(2).pow(112)], bigNumberify(2).pow(112)))[0]).to.eq(
         bigNumberify(2).pow(224)
       )
     })

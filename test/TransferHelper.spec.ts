@@ -41,11 +41,11 @@ describe('TransferHelper', () => {
     sendTx: (tokenAddress: string) => Promise<void>
     expectedError: string
   }) {
-    it('succeeds with compliant with no revert and true', async () => {
+    it('succeeds with compliant with no revert and true return', async () => {
       await fakeCompliant.setup(true, false)
       await sendTx(fakeCompliant.address)
     })
-    it('fails with compliant with no revert and false', async () => {
+    it('fails with compliant with no revert and false return', async () => {
       await fakeCompliant.setup(false, false)
       await expect(sendTx(fakeCompliant.address)).to.be.revertedWith(expectedError)
     })
@@ -53,11 +53,11 @@ describe('TransferHelper', () => {
       await fakeCompliant.setup(false, true)
       await expect(sendTx(fakeCompliant.address)).to.be.revertedWith(expectedError)
     })
-    it('succeeds with noncompliant with no revert', async () => {
+    it('succeeds with noncompliant (no return) with no revert', async () => {
       await fakeNoncompliant.setup(false)
       await sendTx(fakeNoncompliant.address)
     })
-    it('fails with noncompliant with revert', async () => {
+    it('fails with noncompliant (no return) with revert', async () => {
       await fakeNoncompliant.setup(true)
       await expect(sendTx(fakeNoncompliant.address)).to.be.revertedWith(expectedError)
     })
@@ -83,11 +83,11 @@ describe('TransferHelper', () => {
   })
 
   describe('#safeTransferETH', () => {
-    it('succeeds if not reverted', async () => {
+    it('succeeds call not reverted', async () => {
       await fakeFallback.setup(false)
       await transferHelper.safeTransferETH(fakeFallback.address, 0)
     })
-    it('fails if reverts', async () => {
+    it('fails if call reverts', async () => {
       await fakeFallback.setup(true)
       await expect(transferHelper.safeTransferETH(fakeFallback.address, 0)).to.be.revertedWith(
         'TransferHelper: ETH_TRANSFER_FAILED'
