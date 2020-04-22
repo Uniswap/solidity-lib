@@ -27,21 +27,21 @@ library FixedPoint {
     }
 
     // divide a UQ112x112 by a uint112, returning a UQ112x112
-    function uqdiv(uq112x112 memory self, uint112 y) internal pure returns (uq112x112 memory) {
-        require(y != 0, 'FixedPoint: DIV_BY_ZERO');
-        return uq112x112(self._x / uint224(y));
+    function div(uq112x112 memory self, uint112 x) internal pure returns (uq112x112 memory) {
+        require(x != 0, 'FixedPoint: DIV_BY_ZERO');
+        return uq112x112(self._x / uint224(x));
     }
 
     // multiply a UQ112x112 by a uint, returning a UQ144x112
     // reverts on overflow
-    function uqmul(uq112x112 memory self, uint y) internal pure returns (uq144x112 memory) {
+    function mul(uq112x112 memory self, uint y) internal pure returns (uq144x112 memory) {
         uint z;
         require(y == 0 || (z = uint(self._x) * y) / y == uint(self._x), "FixedPoint: MULTIPLICATION_OVERFLOW");
         return uq144x112(z);
     }
 
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator
-    // equivalent to encode(numerator).uqdiv(denominator)
+    // equivalent to encode(numerator).div(denominator)
     function fraction(uint112 numerator, uint112 denominator) internal pure returns (uq112x112 memory) {
         require(denominator > 0, "FixedPoint: DIV_BY_ZERO");
         return uq112x112((uint224(numerator) << RESOLUTION) / denominator);

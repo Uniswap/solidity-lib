@@ -14,7 +14,7 @@ contract FixedPointTest {
 
     // divide a UQ112x112 by a uint112, returning a UQ112x112
     function div(FixedPoint.uq112x112 calldata self, uint112 y) external pure returns (FixedPoint.uq112x112 memory) {
-        return FixedPoint.uqdiv(self, y);
+        return FixedPoint.div(self, y);
     }
 
     function fraction(uint112 numerator, uint112 denominator) external pure returns (FixedPoint.uq112x112 memory) {
@@ -23,7 +23,7 @@ contract FixedPointTest {
 
     // multiply a UQ112x112 by a uint, returning a UQ144x112
     function mul(FixedPoint.uq112x112 calldata self, uint y) external pure returns (FixedPoint.uq144x112 memory) {
-        return FixedPoint.uqmul(self, y);
+        return FixedPoint.mul(self, y);
     }
 
     // decode a UQ112x112 in a uint container into a uint by truncating after the radix point
