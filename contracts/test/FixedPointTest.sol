@@ -34,4 +34,12 @@ contract FixedPointTest {
     function decode144(FixedPoint.uq144x112 calldata self) external pure returns (uint144) {
         return FixedPoint.decode144(self);
     }
+
+    function reciprocal(FixedPoint.uq112x112 calldata self) external pure returns (FixedPoint.uq112x112 memory) {
+        return FixedPoint.reciprocal(self);
+    }
+
+    function sqrt(FixedPoint.uq112x112 calldata self) external pure returns (FixedPoint.uq112x112 memory) {
+        return FixedPoint.sqrt(self);
+    }
 }

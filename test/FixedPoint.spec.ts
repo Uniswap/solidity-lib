@@ -105,4 +105,26 @@ describe('FixedPoint', () => {
       await expect(fixedPoint.fraction(bigNumberify(1), bigNumberify(0))).to.be.revertedWith('FixedPoint: DIV_BY_ZERO')
     })
   })
+
+  describe.only('#reciprocal', () => {
+    it('works for 0.25', async () => {
+      expect((await fixedPoint.reciprocal([Q112.mul(bigNumberify(25)).div(100)]))[0])
+        .to.eq(Q112.mul(4))
+    })
+    it('fails for 0', async () => {
+      await expect(fixedPoint.reciprocal([bigNumberify(0)])).to.be.revertedWith('FixedPoint: ZERO_RECIPROCAL')
+    })
+  })
+
+  describe.only('#sqrt', () => {
+    it('works for 25', async () => {
+      expect((await fixedPoint.sqrt([bigNumberify(25).mul(Q112)]))[0])
+        .to.eq(bigNumberify(5).mul(Q112))
+    })
+
+    it('works with numbers less than 1', async () => {
+      expect((await fixedPoint.sqrt([bigNumberify(1225).mul(Q112).div(100)]))[0])
+        .to.eq(bigNumberify(35).mul(Q112).div(10))
+    })
+  })
 })
