@@ -5,35 +5,38 @@ import './FixedPoint.sol';
 library TickMath {
     using FixedPoint for FixedPoint.uq112x112;
 
-    // Computes `k * (1+1/q) ^ n`, with precision `p`. The higher
-    // the precision, the higher the gas cost. It should be
-    // something around the log of `n`.
-    // Much smaller values are sufficient to get a great approximation.
-    function fracExp(uint k, uint q, uint n, uint p) pure private returns (uint) {
-        uint s = 0;
-        uint N = 1;
-        uint B = 1;
-        for (uint i = 0; i < p; ++i) {
-            s += k * N / B / (q ** i);
-            N = N * (n - i);
-            B = B * (i + 1);
-        }
-        return s;
-    }
 
-    uint224 private constant ONE_UQ112x112 = 1 << 112; // 1.0
-    uint private constant TICK_DENOMINATOR = 100; // price ticks are of size 1/100
-    uint private constant EXPONENTIATE_PRECISION = 32; // we use 16 because our tick is 16 bits
-    int16 private constant EQUAL_RATIO_TICK = int16(0);
+    uint8 public constant EXPONENTIATE_PRECISION = 12;
+    uint112 public constant TICK_DENOMINATOR = 100;
+    int16 public constant EQUAL_RATIO_TICK = 0;
 
     // given a tick index, return the corresponding price in a FixedPoint.uq112x112 struct
     // a tick represents a reserves ratio of 1.01^tick
+    // math adapted from:
+    // https://ethereum.stackexchange.com/questions/10425/is-there-any-efficient-way-to-compute-the-exponentiation-of-a-fraction-and-an-in
     function getPrice(int16 tick) internal pure returns (FixedPoint.uq112x112 memory) {
         if (tick == EQUAL_RATIO_TICK) {
-            return FixedPoint.uq112x112(ONE_UQ112x112);
+            return FixedPoint.encode(1);
         }
-        uint exponentiated = fracExp(ONE_UQ112x112, TICK_DENOMINATOR, tick < 0 ? uint(tick * - 1) : uint(tick), EXPONENTIATE_PRECISION);
-        FixedPoint.uq112x112 memory result = FixedPoint.uq112x112(uint224(exponentiated));
-        return tick < 0 ? result.reciprocal() : result;
+
+        uint16 absoluteTick = tick > 0 ? uint16(tick) : uint16(- 1 * tick);
+
+        FixedPoint.uq112x112 memory price = FixedPoint.uq112x112(0);
+        FixedPoint.uq112x112 memory N = FixedPoint.encode(1);
+        uint112 B = 1;
+        for (uint8 i = 0; i < EXPONENTIATE_PRECISION; ++i) {
+            //   s += k * N / B / (q**i);
+            price = price.add(N.div(B).div(TICK_DENOMINATOR ** i));
+            //    N  = N * (n-i);
+            N = N.mul112(uint112(absoluteTick - i));
+            //    B  = B * (i+1);
+            B *= (i + 1);
+        }
+
+        if (tick < 0) {
+            return price.reciprocal();
+        }
+
+        return price;
     }
 }
