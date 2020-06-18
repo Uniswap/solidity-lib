@@ -113,6 +113,9 @@ describe('FixedPoint', () => {
     it('fails for 0', async () => {
       await expect(fixedPoint.reciprocal([bigNumberify(0)])).to.be.revertedWith('FixedPoint: ZERO_RECIPROCAL')
     })
+    it('works for 5', async () => {
+      expect((await fixedPoint.reciprocal([Q112.mul(bigNumberify(5))]))[0]).to.eq(Q112.mul(bigNumberify(1)).div(5))
+    })
   })
 
   describe('#sqrt', () => {
@@ -124,6 +127,10 @@ describe('FixedPoint', () => {
       expect((await fixedPoint.sqrt([bigNumberify(1225).mul(Q112).div(100)]))[0]).to.eq(
         bigNumberify(35).mul(Q112).div(10)
       )
+    })
+
+    it('works with 0', async () => {
+      expect((await fixedPoint.sqrt([bigNumberify(0)]))[0]).to.eq(bigNumberify(0))
     })
   })
 })
