@@ -26,6 +26,7 @@ describe.only('TickMath', () => {
     tickMath = await deployContract(wallet, TickMathTest, [], overrides)
   })
 
+  // handles if the result is an array (in the case of fixed point struct return values where it's an array of one uint224)
   function bnify2(a: BigNumberish | [BigNumberish]) {
     if (Array.isArray(a)) {
       return bigNumberify(a[0])
@@ -34,19 +35,20 @@ describe.only('TickMath', () => {
     }
   }
 
+  // checks that an actual number is within allowedDiffBips of an expected number
   async function checkApproximatelyEquals(
-    actual: BigNumberish | Promise<BigNumberish>,
-    expected: BigNumberish | Promise<BigNumberish>,
+    actualP: BigNumberish | Promise<BigNumberish>,
+    expectedP: BigNumberish | Promise<BigNumberish>,
     allowedDiffBips: BigNumberish
   ) {
-    const [x, y] = [bnify2(await actual), bnify2(await expected)]
-    const d = x.sub(y).abs()
+    const [actual, expected] = [bnify2(await actualP), bnify2(await expectedP)]
+    const absDiff = actual.sub(expected).abs()
     expect(
-      d.lte(y.mul(allowedDiffBips).div(10000)),
-      `${x.toString()} differs from ${y.toString()} by lte ${allowedDiffBips.toString()}bips; actual: ${d
-        .mul(10000)
-        .div(y)
-        .toString()}`
+      absDiff.lte(expected.mul(allowedDiffBips).div(10000)),
+      `
+      ${actual.toString()} differs from ${expected.toString()} by >${allowedDiffBips.toString()}bips. 
+      abs diff: ${absDiff.toString()}
+      abs diff bips: ${absDiff.mul(10000).div(expected).toString()}`
     ).to.be.true
   }
 
@@ -59,7 +61,7 @@ describe.only('TickMath', () => {
 
     for (let tick of [-775, -750, -500, -400, -300, -200, -100, -20, 0, 50, 100, 200, 300, 400, 500, 750, 775]) {
       it(`tick index: ${tick}`, async () => {
-        await checkApproximatelyEquals(tickMath.getPrice(tick), exactTickRatioQ112x112(tick), 50)
+        await checkApproximatelyEquals(tickMath.getPrice(tick), exactTickRatioQ112x112(tick), 25)
       })
     }
   })
