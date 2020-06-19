@@ -2,6 +2,7 @@ import chai, { expect } from 'chai'
 import { Contract } from 'ethers'
 import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
 import { bigNumberify, BigNumberish } from 'ethers/utils'
+import { BigNumber } from 'ethers/utils/bignumber'
 
 import TickMathTest from '../build/TickMathTest.json'
 
@@ -27,7 +28,7 @@ describe.only('TickMath', () => {
   })
 
   // handles if the result is an array (in the case of fixed point struct return values where it's an array of one uint224)
-  function bnify2(a: BigNumberish | [BigNumberish]) {
+  function bnify2(a: BigNumberish | [BigNumberish]): BigNumber {
     if (Array.isArray(a)) {
       return bigNumberify(a[0])
     } else {
@@ -56,7 +57,7 @@ describe.only('TickMath', () => {
     function exactTickRatioQ112x112(tickIndex: number): BigNumberish {
       return tickIndex > 0
         ? Q112.mul(bigNumberify(101).pow(tickIndex)).div(bigNumberify(100).pow(tickIndex))
-        : Q112.mul(bigNumberify(100).pow(tickIndex)).div(bigNumberify(101).pow(tickIndex))
+        : Q112.mul(bigNumberify(100).pow(tickIndex * -1)).div(bigNumberify(101).pow(tickIndex * -1))
     }
 
     it('js implementation is correct for max tick', () => {
@@ -113,14 +114,14 @@ describe.only('TickMath', () => {
 
   describe('gas', () => {
     const tickGasPrices: { [tick: number]: number } = {
-      [-7802]: 34052,
-      [-1000]: 33972,
-      [-500]: 33908,
-      [-50]: 33876,
-      [0]: 22863,
-      [50]: 33251,
-      [500]: 33295,
-      [1000]: 33359,
+      [-7802]: 28513,
+      [-1000]: 27262,
+      [-500]: 27071,
+      [-50]: 25895,
+      [0]: 22859,
+      [50]: 25326,
+      [500]: 26617,
+      [1000]: 26832,
       [7802]: 33439,
     }
 
