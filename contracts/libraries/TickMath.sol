@@ -56,19 +56,21 @@ library TickMath {
         uint256 price = 0;
         uint256 N = 1;
         uint256 B = 1;
+        uint256 term;
 
         for (uint8 i = 0; i < EXPONENTIATE_PRECISION && N > 0; ++i) {
-            uint denom = TICK_DENOMINATOR ** i;
             // max value is 100^15 or 1e30 or ~2^100
+            uint q_i = TICK_DENOMINATOR ** i;
+
             // s += k * N / B / (q**i);
             if (N < uint128(- 1)) {
-                price = add(price, ((N << 128) / B) / denom);
-            } else if (N < uint192(- 1)) {// bit shifting will lose precision
-                price = add(price, ((N / B) / denom) << 128);
-                //                price = add(price, (((N / B) << 32) / denom) << 96);
+                term = ((N << 128) / B) / q_i;
+            } else if (N < uint192(- 1)) {
+                term = (((N << 64) / B) / q_i) << 64;
             } else {
-                price = add(price, ((N / B) / denom) << 128);
+                term = ((N / B) / q_i) << 128;
             }
+            price = add(price, term);
             // N = N * (n-i);
             N = mul(N, (absoluteTick - i));
             // B = B * (i+1);

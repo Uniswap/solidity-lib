@@ -9,8 +9,8 @@ contract TickMathTest {
         return TickMath.getPrice(tick);
     }
 
-    event TickPrice(int16 tick, uint224 price);
+    event TickPrice(uint224 price);
     function logTickPrice(int16 tick) external {
-        emit TickPrice(tick, TickMath.getPrice(tick)._x);
+        emit TickPrice(TickMath.getPrice(tick)._x);
     }
 }
