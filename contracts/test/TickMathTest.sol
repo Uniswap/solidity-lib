@@ -4,8 +4,13 @@ pragma experimental ABIEncoderV2;
 import '../libraries/TickMath.sol';
 import '../libraries/FixedPoint.sol';
 
-library TickMathTest {
+contract TickMathTest {
     function getPrice(int16 tick) public pure returns (FixedPoint.uq112x112 memory) {
         return TickMath.getPrice(tick);
+    }
+
+    event TickPrice(int16 tick, uint224 price);
+    function logTickPrice(int16 tick) external {
+        emit TickPrice(tick, TickMath.getPrice(tick)._x);
     }
 }
