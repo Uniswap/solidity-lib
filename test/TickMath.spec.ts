@@ -113,17 +113,21 @@ describe.only('TickMath', () => {
     await checkApproximatelyEquals(tickMath.getPrice(140), Q112.mul(4), 70)
   })
 
+  it('multiplier calculation', async () => {
+    expect(await tickMath.tickMultiplier()).to.eq('0x3ff8460d6ccca3676b5d9a618c6f6aa7')
+  })
+
   describe('gas', () => {
     const tickGasPrices: { [tick: number]: number } = {
-      [-7802]: 47595,
-      [-1000]: 47522,
-      [-500]: 47521,
-      [-50]: 47480,
-      [0]: 22859,
-      [50]: 46864,
-      [500]: 46917,
-      [1000]: 46918,
-      [7802]: 46991,
+      [-7802]: 30202,
+      [-1000]: 30129,
+      [-500]: 30128,
+      [-50]: 30087,
+      [0]: 22881,
+      [50]: 29471,
+      [500]: 29524,
+      [1000]: 29525,
+      [7802]: 29598,
     }
 
     for (let tick in tickGasPrices) {

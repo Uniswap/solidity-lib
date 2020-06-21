@@ -13,4 +13,8 @@ contract TickMathTest {
     function logTickPrice(int16 tick) external {
         emit TickPrice(TickMath.getPrice(tick)._x);
     }
+
+    function tickMultiplier() pure public returns (bytes16) {
+        return ABDKMathQuad.ln(ABDKMathQuad.from64x64(int128(101 << 64) / 100));
+    }
 }
