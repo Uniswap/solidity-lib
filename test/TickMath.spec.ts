@@ -14,7 +14,7 @@ const overrides = {
 
 const Q112 = bigNumberify(2).pow(112)
 
-describe.only('TickMath', () => {
+describe('TickMath', () => {
   const provider = new MockProvider({
     hardfork: 'istanbul',
     mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
@@ -46,18 +46,16 @@ describe.only('TickMath', () => {
     const absDiff = actual.sub(expected).abs()
     expect(
       absDiff.lte(expected.mul(allowedDiffBips).div(10000)),
-      `
-      ${actual.toString()} differs from ${expected.toString()} by >${allowedDiffBips.toString()}bips. 
+      `${actual.toString()} differs from ${expected.toString()} by >${allowedDiffBips.toString()}bips. 
       abs diff: ${absDiff.toString()}
       diff bips: ${absDiff.mul(10000).div(expected).toString()}`
     ).to.be.true
   }
 
   describe('matches js implementation', () => {
-    function exactTickRatioQ112x112(tickIndex: number): BigNumberish {
-      return tickIndex > 0
-        ? Q112.mul(bigNumberify(101).pow(tickIndex)).div(bigNumberify(100).pow(tickIndex))
-        : Q112.mul(bigNumberify(100).pow(tickIndex * -1)).div(bigNumberify(101).pow(tickIndex * -1))
+    function exactTickRatioQ112x112(tick: number): BigNumberish {
+      const value = Q112.mul(bigNumberify(101).pow(Math.abs(tick))).div(bigNumberify(100).pow(Math.abs(tick)))
+      return tick > 0 ? value : Q112.mul(Q112).div(value)
     }
 
     it('js implementation is correct for max tick', () => {
@@ -65,6 +63,9 @@ describe.only('TickMath', () => {
       expect(exactTickRatioQ112x112(7802).toString()).to.eq(
         '26959868313666068472686589847821896098186460312140959350827207227142'
       )
+    })
+    it('js implementation for -500 tick', () => {
+      expect(exactTickRatioQ112x112(-500).toString()).to.eq('35865147646827690843910198668127')
     })
 
     describe('small ticks', () => {
@@ -115,13 +116,13 @@ describe.only('TickMath', () => {
   describe('gas', () => {
     const tickGasPrices: { [tick: number]: number } = {
       [-7802]: 28513,
-      [-1000]: 27262,
-      [-500]: 27071,
-      [-50]: 25895,
-      [0]: 22859,
-      [50]: 25326,
-      [500]: 26617,
-      [1000]: 26832,
+      [-1000]: 26325,
+      [-500]: 26095,
+      [-50]: 24988,
+      [0]: 22744,
+      [50]: 24393,
+      [500]: 25512,
+      [1000]: 25742,
       [7802]: 33439,
     }
 
