@@ -14,7 +14,7 @@ const overrides = {
 
 const Q112 = bigNumberify(2).pow(112)
 
-describe('TickMath', () => {
+describe.only('TickMath', () => {
   const provider = new MockProvider({
     hardfork: 'istanbul',
     mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
@@ -87,10 +87,10 @@ describe('TickMath', () => {
     describe('large ticks', () => {
       for (let tick of [50, 100, 250, 500, 1000, 2500, 3000, 4000, 5000, 6000, 7000, 7802]) {
         it(`tick index: ${tick}`, async () => {
-          await checkApproximatelyEquals(tickMath.getPrice(tick), exactTickRatioQ112x112(tick), 25)
+          await checkApproximatelyEquals(tickMath.getPrice(tick), exactTickRatioQ112x112(tick), 5)
         })
         it(`tick index: ${tick * -1}`, async () => {
-          await checkApproximatelyEquals(tickMath.getPrice(tick * -1), exactTickRatioQ112x112(tick * -1), 25)
+          await checkApproximatelyEquals(tickMath.getPrice(tick * -1), exactTickRatioQ112x112(tick * -1), 5)
         })
       }
     })
@@ -115,15 +115,15 @@ describe('TickMath', () => {
 
   describe('gas', () => {
     const tickGasPrices: { [tick: number]: number } = {
-      [-7802]: 28513,
-      [-1000]: 26325,
-      [-500]: 26095,
-      [-50]: 24988,
-      [0]: 22744,
-      [50]: 24393,
-      [500]: 25512,
-      [1000]: 25742,
-      [7802]: 33439,
+      [-7802]: 47595,
+      [-1000]: 47522,
+      [-500]: 47521,
+      [-50]: 47480,
+      [0]: 22859,
+      [50]: 46864,
+      [500]: 46917,
+      [1000]: 46918,
+      [7802]: 46991,
     }
 
     for (let tick in tickGasPrices) {
