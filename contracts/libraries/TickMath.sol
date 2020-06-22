@@ -16,17 +16,15 @@ library TickMath {
             return FixedPoint.uq112x112(ONE);
         }
 
-        uint16 abs = tick > 0 ? uint16(tick) : uint16(tick * - 1);
-
-        bytes16 ePower = ABDKMathQuad.mul(TICK_MULTIPLIER, ABDKMathQuad.fromUInt(abs));
+        bytes16 ePower = ABDKMathQuad.mul(TICK_MULTIPLIER, ABDKMathQuad.fromInt(tick));
 
         int256 result = ABDKMathQuad.to128x128(ABDKMathQuad.exp(ePower));
 
-        require(result < uint240(-1), 'OVERFLOW_UQ112x112');
-        require(result > 0, 'NEGATIVE_OR_ZERO_RESULT');
+        require(result < uint240(-1), 'TickMath: OVERFLOW_UQ112x112');
+        require(result > 0, 'TickMath: NEGATIVE_OR_ZERO_RESULT');
 
         uint224 converted = uint224(result >> 16);
 
-        return tick > 0 ? FixedPoint.uq112x112(converted) : FixedPoint.reciprocal(FixedPoint.uq112x112(converted));
+        return FixedPoint.uq112x112(converted);
     }
 }
