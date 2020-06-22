@@ -17,6 +17,6 @@ contract TickMathTest {
     }
 
     function tickMultiplier() pure public returns (bytes16) {
-        return ABDKMathQuad.ln(ABDKMathQuad.from64x64(int128(101 << 64) / 100));
+        return ABDKMathQuad.log_2(ABDKMathQuad.from64x64(int128(101 << 64) / 100));
     }
 }
