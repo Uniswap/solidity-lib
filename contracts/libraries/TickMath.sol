@@ -1,7 +1,7 @@
 pragma solidity >=0.5.0;
 
 import './FixedPoint.sol';
-import './ABDKMathQuad.sol';
+import 'abdk-libraries-solidity/ABDKMathQuad.sol';
 
 library TickMath {
     // quad tick multiplier

@@ -58,7 +58,7 @@ describe('TickMath', () => {
       return tick > 0 ? value : Q112.mul(Q112).div(value)
     }
 
-    describe.skip('js implementation', () => {
+    describe('js implementation', () => {
       it('max tick', () => {
         // https://www.wolframalpha.com/input/?i=%281.01%5E7802%29+*+%282%5E112%29
         expect(exactTickRatioQ112x112(7802).toString()).to.eq(
