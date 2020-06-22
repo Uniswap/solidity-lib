@@ -58,24 +58,35 @@ describe('TickMath', () => {
       return tick > 0 ? value : Q112.mul(Q112).div(value)
     }
 
-    it('js implementation is correct for max tick', () => {
-      // https://www.wolframalpha.com/input/?i=%281.01%5E7802%29+*+%282%5E112%29
-      expect(exactTickRatioQ112x112(7802).toString()).to.eq(
-        '26959868313666068472686589847821896098186460312140959350827207227142'
-      )
-    })
-    it('js implementation for -500 tick', () => {
-      expect(exactTickRatioQ112x112(-500).toString()).to.eq('35865147646827690843910198668127')
+    describe('js implementation', () => {
+      it('js implementation is correct for max tick', () => {
+        // https://www.wolframalpha.com/input/?i=%281.01%5E7802%29+*+%282%5E112%29
+        expect(exactTickRatioQ112x112(7802).toString()).to.eq(
+          '26959868313666068472686589847821896098186460312140959350827207227142'
+        )
+      })
+      it('js implementation for -500 tick', () => {
+        expect(exactTickRatioQ112x112(-500).toString()).to.eq('35865147646827690843910198668127')
+      })
+
+      it('js implementation for -7000 tick', () => {
+        expect(exactTickRatioQ112x112(-7000).toString()).to.eq('2922')
+      })
     })
 
+    const ALLOWED_BIPS_DIFF = 1
     describe('small ticks', () => {
       for (let tick = 0; tick < 20; tick++) {
         it(`tick index: ${tick}`, async () => {
-          await checkApproximatelyEquals(tickMath.getPrice(tick), exactTickRatioQ112x112(tick), 5)
+          await checkApproximatelyEquals(tickMath.getPrice(tick), exactTickRatioQ112x112(tick), ALLOWED_BIPS_DIFF)
         })
         if (tick !== 0) {
           it(`tick index: ${tick * -1}`, async () => {
-            await checkApproximatelyEquals(tickMath.getPrice(tick * -1), exactTickRatioQ112x112(tick * -1), 5)
+            await checkApproximatelyEquals(
+              tickMath.getPrice(tick * -1),
+              exactTickRatioQ112x112(tick * -1),
+              ALLOWED_BIPS_DIFF
+            )
           })
         }
       }
@@ -87,10 +98,14 @@ describe('TickMath', () => {
     describe('large ticks', () => {
       for (let tick of [50, 100, 250, 500, 1000, 2500, 3000, 4000, 5000, 6000, 7000, 7802]) {
         it(`tick index: ${tick}`, async () => {
-          await checkApproximatelyEquals(tickMath.getPrice(tick), exactTickRatioQ112x112(tick), 5)
+          await checkApproximatelyEquals(tickMath.getPrice(tick), exactTickRatioQ112x112(tick), ALLOWED_BIPS_DIFF)
         })
         it(`tick index: ${tick * -1}`, async () => {
-          await checkApproximatelyEquals(tickMath.getPrice(tick * -1), exactTickRatioQ112x112(tick * -1), 5)
+          await checkApproximatelyEquals(
+            tickMath.getPrice(tick * -1),
+            exactTickRatioQ112x112(tick * -1),
+            ALLOWED_BIPS_DIFF
+          )
         })
       }
     })
