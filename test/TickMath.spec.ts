@@ -58,22 +58,22 @@ describe('TickMath', () => {
       return tick > 0 ? value : Q112.mul(Q112).div(value)
     }
 
-    describe('js implementation', () => {
-      it('js implementation is correct for max tick', () => {
+    describe.skip('js implementation', () => {
+      it('max tick', () => {
         // https://www.wolframalpha.com/input/?i=%281.01%5E7802%29+*+%282%5E112%29
         expect(exactTickRatioQ112x112(7802).toString()).to.eq(
           '26959868313666068472686589847821896098186460312140959350827207227142'
         )
       })
-      it('js implementation for -500 tick', () => {
+      it('-500 tick', () => {
         expect(exactTickRatioQ112x112(-500).toString()).to.eq('35865147646827690843910198668127')
       })
 
-      it('js implementation for -7000 tick', () => {
+      it('-7000 tick', () => {
         expect(exactTickRatioQ112x112(-7000).toString()).to.eq('2922')
       })
 
-      it('js implementation -7801 tick', () => {
+      it('min tick', () => {
         expect(exactTickRatioQ112x112(-7801).toString()).to.eq('1')
       })
     })
@@ -115,7 +115,7 @@ describe('TickMath', () => {
     })
   })
 
-  // these hand written tests make sure we are computing it correctly
+  // these hand written tests make sure we are computing it roughly correctly
   it('returns exactly 1 for tick 0', async () => {
     await checkApproximatelyEquals(tickMath.getPrice(0), Q112, 0)
   })
@@ -138,22 +138,21 @@ describe('TickMath', () => {
 
   describe('gas', () => {
     const tickGasPrices: { [tick: number]: number } = {
-      [-7802]: 30199,
-      [-1000]: 30126,
-      [-500]: 30125,
-      [-50]: 30084,
-      [0]: 22762,
-      [50]: 29468,
-      [500]: 29521,
-      [1000]: 29522,
-      [7802]: 29595,
+      [-7802]: 7255,
+      [-1000]: 7182,
+      [-500]: 7181,
+      [-50]: 7140,
+      [0]: 202,
+      [50]: 6896,
+      [500]: 6937,
+      [1000]: 6938,
+      [7802]: 7011,
     }
 
     for (let tick in tickGasPrices) {
-      it(`gas for tick ${tick}`, async () => {
-        const tx = await tickMath.logTickPrice(tick)
-        const receipt = await tx.wait()
-        expect(receipt.gasUsed.toString()).to.eq(bigNumberify(tickGasPrices[tick]))
+      it(`tick ${tick} uses ${tickGasPrices[tick]} gas`, async () => {
+        const amount = await tickMath.getGasUsed(tick)
+        expect(amount.toString()).to.eq(bigNumberify(tickGasPrices[tick]))
       }).retries(5)
     }
   })

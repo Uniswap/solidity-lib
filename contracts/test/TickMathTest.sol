@@ -9,9 +9,11 @@ contract TickMathTest {
         return TickMath.getPrice(tick);
     }
 
-    event TickPrice(uint224 price);
-    function logTickPrice(int16 tick) external {
-        emit TickPrice(TickMath.getPrice(tick)._x);
+    function getGasUsed(int16 tick) view public returns (uint) {
+        uint gasBefore = gasleft();
+        TickMath.getPrice(tick);
+        uint gasAfter = gasleft();
+        return (gasBefore - gasAfter);
     }
 
     function tickMultiplier() pure public returns (bytes16) {
