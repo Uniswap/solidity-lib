@@ -44,15 +44,6 @@ library FixedPoint {
         return uq144x112(z);
     }
 
-    // multiply a UQ112x112 by a uint, returning a UQ112x112
-    // reverts on overflow
-    function mul112(FixedPoint.uq112x112 memory self, uint y) internal pure returns (FixedPoint.uq112x112 memory) {
-        uint z;
-        require(y == 0 || (z = uint(self._x) * y) / y == uint(self._x), "FixedPoint: MULTIPLICATION_112_OVERFLOW");
-        require(z <= uint224(-1), "FixedPoint: MULTIPLICATION_112_RESULT_OVERFLOW");
-        return FixedPoint.uq112x112(uint224(z));
-    }
-
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator
     // equivalent to encode(numerator).div(denominator)
     function fraction(uint112 numerator, uint112 denominator) internal pure returns (uq112x112 memory) {
@@ -79,13 +70,5 @@ library FixedPoint {
     // square root of a UQ112x112
     function sqrt(uq112x112 memory self) internal pure returns (uq112x112 memory) {
         return uq112x112(uint224(Babylonian.sqrt(uint256(self._x)) << 56));
-    }
-
-    // add a UQ112x112 to a UQ112x112, returning a UQ112x112
-    // reverts on overflow
-    function add(FixedPoint.uq112x112 memory self, FixedPoint.uq112x112 memory y) internal pure returns (FixedPoint.uq112x112 memory) {
-        uint224 z;
-        require((z = self._x + y._x) >= self._x, 'FixedPoint: ADD_OVERFLOW');
-        return FixedPoint.uq112x112(z);
     }
 }
