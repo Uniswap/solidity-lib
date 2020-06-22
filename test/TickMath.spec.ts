@@ -72,6 +72,10 @@ describe('TickMath', () => {
       it('js implementation for -7000 tick', () => {
         expect(exactTickRatioQ112x112(-7000).toString()).to.eq('2922')
       })
+
+      it('js implementation -7801 tick', () => {
+        expect(exactTickRatioQ112x112(-7801).toString()).to.eq('1')
+      })
     })
 
     const ALLOWED_BIPS_DIFF = 1
