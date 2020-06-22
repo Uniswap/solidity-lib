@@ -14,7 +14,7 @@ const overrides = {
 
 const Q112 = bigNumberify(2).pow(112)
 
-describe.only('TickMath', () => {
+describe('TickMath', () => {
   const provider = new MockProvider({
     hardfork: 'istanbul',
     mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
