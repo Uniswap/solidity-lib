@@ -157,7 +157,7 @@ describe('TickMath', () => {
     expect(await tickMath.tickMultiplier()).to.eq('0x3ff8d664ecee35b77e6334057c6a534f')
   })
 
-  describe.only('gas', () => {
+  describe('gas', () => {
     const tickGasPrices: { [tick: number]: number } = {
       [-7802]: 6404,
       [-1000]: 6483,
