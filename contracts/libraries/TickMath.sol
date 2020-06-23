@@ -18,12 +18,12 @@ library TickMath {
             return FixedPoint.uq112x112(ONE);
         }
 
+        require(tick <= MAX_TICK, 'TickMath: OVERFLOW_UQ112x112'); // too large for a uq112x112
+        require(tick >= MIN_TICK, 'TickMath: UNDERFLOW_UQ112x112'); // too small for a uq112x112
+
         bytes16 power = ABDKMathQuad.mul(TICK_MULTIPLIER, ABDKMathQuad.fromInt(tick));
 
         int256 result = ABDKMathQuad.to128x128(ABDKMathQuad.pow_2(power));
-
-        require(result < uint240(-1), 'TickMath: OVERFLOW_UQ112x112'); // too large for a uq112x112
-        require(result > uint16(-1), 'TickMath: UNDERFLOW_UQ112x112'); // too small for a uq112x112
 
         uint224 converted = uint224(result >> 16);
 
