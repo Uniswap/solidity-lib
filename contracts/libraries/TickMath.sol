@@ -4,6 +4,8 @@ import './FixedPoint.sol';
 import 'abdk-libraries-solidity/ABDKMathQuad.sol';
 
 library TickMath {
+    int16 public constant MAX_TICK = 7802;
+    int16 public constant MIN_TICK = -7802;
     // quad tick multiplier
     // ABDKMathQuad.log_2(ABDKMathQuad.from64x64(int128(101 << 64) / 100))
     bytes16 public constant TICK_MULTIPLIER = 0x3ff8d664ecee35b77e6334057c6a534f;
@@ -20,8 +22,8 @@ library TickMath {
 
         int256 result = ABDKMathQuad.to128x128(ABDKMathQuad.pow_2(power));
 
-        require(result < uint240(-1), 'TickMath: OVERFLOW_UQ112x112');
-        require(result > 0, 'TickMath: NEGATIVE_OR_ZERO_RESULT');
+        require(result < uint240(-1), 'TickMath: OVERFLOW_UQ112x112'); // too large for a uq112x112
+        require(result > uint16(-1), 'TickMath: UNDERFLOW_UQ112x112'); // too small for a uq112x112
 
         uint224 converted = uint224(result >> 16);
 
