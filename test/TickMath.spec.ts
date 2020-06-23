@@ -132,6 +132,27 @@ describe('TickMath', () => {
     await checkApproximatelyEquals(tickMath.getPrice(140), Q112.mul(4), 70)
   })
 
+  it('tick too large', async () => {
+    let threw = false
+    try {
+      await tickMath.getPrice(7803)
+    } catch (error) {
+      expect(error.message).to.contain('TickMath: OVERFLOW_UQ112x112')
+      threw = true
+    }
+    expect(threw).to.eq(true)
+  })
+  it('tick too small', async () => {
+    let threw = false
+    try {
+      await tickMath.getPrice(-7803)
+    } catch (error) {
+      expect(error.message).to.contain('TickMath: UNDERFLOW_UQ112x112')
+      threw = true
+    }
+    expect(threw).to.eq(true)
+  })
+
   it('multiplier calculation', async () => {
     expect(await tickMath.tickMultiplier()).to.eq('0x3ff8d664ecee35b77e6334057c6a534f')
   })
