@@ -157,17 +157,17 @@ describe('TickMath', () => {
     expect(await tickMath.tickMultiplier()).to.eq('0x3ff8d664ecee35b77e6334057c6a534f')
   })
 
-  describe('gas', () => {
+  describe.only('gas', () => {
     const tickGasPrices: { [tick: number]: number } = {
-      [-7802]: 6379,
-      [-1000]: 6458,
-      [-500]: 6457,
-      [-50]: 6486,
+      [-7802]: 6404,
+      [-1000]: 6483,
+      [-500]: 6482,
+      [-50]: 6511,
       [0]: 202,
-      [50]: 6248,
-      [500]: 6275,
-      [1000]: 6276,
-      [7802]: 6377,
+      [50]: 6273,
+      [500]: 6300,
+      [1000]: 6301,
+      [7802]: 6402,
     }
 
     for (let tick in tickGasPrices) {
