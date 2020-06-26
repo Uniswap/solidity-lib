@@ -1,8 +1,6 @@
 import chai, { expect } from 'chai'
-import { Contract } from 'ethers'
+import { Contract, BigNumber, constants } from 'ethers'
 import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
-import { bigNumberify } from 'ethers/utils'
-import { MaxUint256 } from 'ethers/constants'
 
 import BabylonianTest from '../build/BabylonianTest.json'
 
@@ -14,9 +12,11 @@ const overrides = {
 
 describe('Babylonian', () => {
   const provider = new MockProvider({
-    hardfork: 'istanbul',
-    mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
-    gasLimit: 9999999,
+    ganacheOptions: {
+      hardfork: 'istanbul',
+      mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
+      gasLimit: 9999999,
+    },
   })
   const [wallet] = provider.getWallets()
 
@@ -33,8 +33,8 @@ describe('Babylonian', () => {
     })
 
     it('max uint256', async () => {
-      const expected = bigNumberify(2).pow(128).sub(1)
-      expect(await babylonian.sqrt(MaxUint256)).to.eq(expected)
+      const expected = BigNumber.from(2).pow(128).sub(1)
+      expect(await babylonian.sqrt(constants.MaxUint256)).to.eq(expected)
     })
   })
 })

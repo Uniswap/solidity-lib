@@ -1,8 +1,7 @@
 import chai, { expect } from 'chai'
-import { Contract } from 'ethers'
+import { Contract, constants } from 'ethers'
+import { formatBytes32String } from '@ethersproject/strings'
 import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
-import { formatBytes32String } from 'ethers/utils'
-import { AddressZero } from 'ethers/constants'
 
 import SafeERC20NamerTest from '../build/SafeERC20NamerTest.json'
 import FakeCompliantERC20 from '../build/NamerTestFakeCompliantERC20.json'
@@ -21,9 +20,11 @@ const fullBytes32Symbol = 'SYMB'.repeat(8).substr(0, 31)
 
 describe('SafeERC20Namer', () => {
   const provider = new MockProvider({
-    hardfork: 'istanbul',
-    mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
-    gasLimit: 9999999,
+    ganacheOptions: {
+      hardfork: 'istanbul',
+      mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
+      gasLimit: 9999999,
+    },
   })
   const [wallet] = provider.getWallets()
 
@@ -79,7 +80,7 @@ describe('SafeERC20Namer', () => {
       expect(await getName(token.address)).to.eq(token.address.toUpperCase().substr(2))
     })
     it('works with non-code address', async () => {
-      expect(await getName(AddressZero)).to.eq(AddressZero.substr(2))
+      expect(await getName(constants.AddressZero)).to.eq(constants.AddressZero.substr(2))
     })
     it('works with really long strings', async () => {
       const token = await deployCompliant({ name: 'token name'.repeat(32), symbol: 'tn'.repeat(32) })
@@ -113,7 +114,7 @@ describe('SafeERC20Namer', () => {
       expect(await getSymbol(token.address)).to.eq(token.address.substr(2, 6).toUpperCase())
     })
     it('works with non-code address', async () => {
-      expect(await getSymbol(AddressZero)).to.eq(AddressZero.substr(2, 6))
+      expect(await getSymbol(constants.AddressZero)).to.eq(constants.AddressZero.substr(2, 6))
     })
     it('works with really long strings', async () => {
       const token = await deployCompliant({ name: 'token name'.repeat(32), symbol: 'tn'.repeat(32) })
