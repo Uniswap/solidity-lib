@@ -1,7 +1,6 @@
 import chai, { expect } from 'chai'
-import { Contract } from 'ethers'
+import { Contract, constants } from 'ethers'
 import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
-import { AddressZero, MaxUint256 } from 'ethers/constants'
 
 import TransferHelperTest from '../build/TransferHelperTest.json'
 import FakeFallback from '../build/TransferHelperTestFakeFallback.json'
@@ -16,9 +15,11 @@ const overrides = {
 
 describe('TransferHelper', () => {
   const provider = new MockProvider({
-    hardfork: 'istanbul',
-    mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
-    gasLimit: 9999999,
+    ganacheOptions: {
+      hardfork: 'istanbul',
+      mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
+      gasLimit: 9999999,
+    },
   })
   const [wallet] = provider.getWallets()
 
@@ -65,19 +66,25 @@ describe('TransferHelper', () => {
 
   describe('#safeApprove', () => {
     harness({
-      sendTx: (tokenAddress) => transferHelper.safeApprove(tokenAddress, AddressZero, MaxUint256),
+      sendTx: (tokenAddress) => transferHelper.safeApprove(tokenAddress, constants.AddressZero, constants.MaxUint256),
       expectedError: 'TransferHelper: APPROVE_FAILED',
     })
   })
   describe('#safeTransfer', () => {
     harness({
-      sendTx: (tokenAddress) => transferHelper.safeTransfer(tokenAddress, AddressZero, MaxUint256),
+      sendTx: (tokenAddress) => transferHelper.safeTransfer(tokenAddress, constants.AddressZero, constants.MaxUint256),
       expectedError: 'TransferHelper: TRANSFER_FAILED',
     })
   })
   describe('#safeTransferFrom', () => {
     harness({
-      sendTx: (tokenAddress) => transferHelper.safeTransferFrom(tokenAddress, AddressZero, AddressZero, MaxUint256),
+      sendTx: (tokenAddress) =>
+        transferHelper.safeTransferFrom(
+          tokenAddress,
+          constants.AddressZero,
+          constants.AddressZero,
+          constants.MaxUint256
+        ),
       expectedError: 'TransferHelper: TRANSFER_FROM_FAILED',
     })
   })

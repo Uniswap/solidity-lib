@@ -1,7 +1,6 @@
 import chai, { expect } from 'chai'
-import { Contract } from 'ethers'
+import { Contract, constants } from 'ethers'
 import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
-import { AddressZero } from 'ethers/constants'
 
 import AddressStringUtilTest from '../build/AddressStringUtilTest.json'
 
@@ -15,9 +14,11 @@ const example = '0xC257274276a4E539741Ca11b590B9447B26A8051'
 
 describe('AddressStringUtil', () => {
   const provider = new MockProvider({
-    hardfork: 'istanbul',
-    mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
-    gasLimit: 9999999,
+    ganacheOptions: {
+      hardfork: 'istanbul',
+      mnemonic: 'horn horn horn horn horn horn horn horn horn horn horn horn',
+      gasLimit: 9999999,
+    },
   })
   const [wallet] = provider.getWallets()
 
@@ -28,7 +29,7 @@ describe('AddressStringUtil', () => {
 
   describe('#toAsciiString', () => {
     it('zero address', async () => {
-      expect(await addressStringUtil.toAsciiString(AddressZero, 40)).to.eq(AddressZero.substr(2))
+      expect(await addressStringUtil.toAsciiString(constants.AddressZero, 40)).to.eq(constants.AddressZero.substr(2))
     })
     it('own address', async () => {
       expect(await addressStringUtil.toAsciiString(addressStringUtil.address, 40)).to.eq(
