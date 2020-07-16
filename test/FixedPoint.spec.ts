@@ -122,8 +122,8 @@ describe('FixedPoint', () => {
   })
 
   describe('#sqrt', () => {
-    it('works for 25', async () => {
-      expect((await fixedPoint.sqrt([BigNumber.from(25).mul(Q112)]))[0]).to.eq(BigNumber.from(5).mul(Q112))
+    it('works with 0', async () => {
+      expect((await fixedPoint.sqrt([BigNumber.from(0)]))[0]).to.eq(BigNumber.from(0))
     })
 
     it('works with numbers less than 1', async () => {
@@ -132,8 +132,22 @@ describe('FixedPoint', () => {
       )
     })
 
-    it('works with 0', async () => {
-      expect((await fixedPoint.sqrt([BigNumber.from(0)]))[0]).to.eq(BigNumber.from(0))
+    it('works for 25', async () => {
+      expect((await fixedPoint.sqrt([BigNumber.from(25).mul(Q112)]))[0]).to.eq(BigNumber.from(5).mul(Q112))
+    })
+
+    it('works for max uint112', async () => {
+      const input = BigNumber.from(2).pow(112).sub(1).mul(Q112)
+      const result = (await fixedPoint.sqrt([input]))[0]
+      const expected = BigNumber.from('374144419156711147060143317175368417003121712037887')
+      expect(result).to.eq(expected.shr(40).shl(40))
+    })
+
+    it('works for max uint224', async () => {
+      const input = BigNumber.from(2).pow(224).sub(1)
+      const result = (await fixedPoint.sqrt([input]))[0]
+      const expected = BigNumber.from('374144419156711147060143317175368453031918731001855')
+      expect(result).to.eq(expected.shr(40).shl(40))
     })
   })
 })

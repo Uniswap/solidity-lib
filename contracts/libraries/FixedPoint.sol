@@ -29,20 +29,20 @@ library FixedPoint {
 
     // encodes a uint144 as a UQ144x112
     function encode144(uint144 x) internal pure returns (uq144x112 memory) {
-        return uq144x112(uint256(x) << RESOLUTION);
+        return uq144x112(uint(x) << RESOLUTION);
     }
 
     // divide a UQ112x112 by a uint112, returning a UQ112x112
     function div(uq112x112 memory self, uint112 x) internal pure returns (uq112x112 memory) {
         require(x != 0, 'FixedPoint: DIV_BY_ZERO');
-        return uq112x112(self._x / uint224(x));
+        return uq112x112(self._x / x);
     }
 
     // multiply a UQ112x112 by a uint, returning a UQ144x112
     // reverts on overflow
     function mul(uq112x112 memory self, uint y) internal pure returns (uq144x112 memory) {
         uint z;
-        require(y == 0 || (z = uint(self._x) * y) / y == uint(self._x), "FixedPoint: MULTIPLICATION_OVERFLOW");
+        require(y == 0 || (z = self._x * y) / y == self._x, "FixedPoint: MULTIPLICATION_OVERFLOW");
         return uq144x112(z);
     }
 
@@ -71,6 +71,6 @@ library FixedPoint {
 
     // square root of a UQ112x112
     function sqrt(uq112x112 memory self) internal pure returns (uq112x112 memory) {
-        return uq112x112(uint224(Babylonian.sqrt(uint256(self._x)) << 56));
+        return uq112x112(uint224(Babylonian.sqrt(uint(self._x) << 32) << 40));
     }
 }
