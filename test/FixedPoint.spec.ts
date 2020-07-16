@@ -93,6 +93,34 @@ describe('FixedPoint', () => {
     })
   })
 
+  describe('#muli', () => {
+    it('works for 0', async () => {
+      expect(await fixedPoint.muli([BigNumber.from(0).mul(Q112)], BigNumber.from(1))).to.eq(BigNumber.from(0))
+      expect(await fixedPoint.muli([BigNumber.from(1).mul(Q112)], BigNumber.from(0))).to.eq(BigNumber.from(0))
+    })
+
+    it('works for 3*2', async () => {
+      expect(await fixedPoint.muli([BigNumber.from(3).mul(Q112)], BigNumber.from(2))).to.eq(BigNumber.from(6))
+    })
+
+    it('works for 3*-2', async () => {
+      expect(await fixedPoint.muli([BigNumber.from(3).mul(Q112)], BigNumber.from(-2))).to.eq(BigNumber.from(-6))
+    })
+
+    it('works for 3*-2', async () => {
+      expect(await fixedPoint.muli([BigNumber.from(3).mul(Q112)], BigNumber.from(-2))).to.eq(BigNumber.from(-6))
+    })
+
+    it('overflow', async () => {
+      await expect(fixedPoint.muli([BigNumber.from(1).mul(Q112)], BigNumber.from(2).pow(144))).to.be.revertedWith(
+        'FixedPoint: MULTIPLICATION_OVERFLOW'
+      )
+      await expect(
+        fixedPoint.muli([BigNumber.from(1).mul(Q112)], BigNumber.from(2).pow(144).mul(-1))
+      ).to.be.revertedWith('FixedPoint: MULTIPLICATION_OVERFLOW')
+    })
+  })
+
   describe('#fraction', () => {
     it('correct computation less than 1', async () => {
       expect((await fixedPoint.fraction(4, 100))[0]).to.eq(BigNumber.from(4).mul(Q112).div(100))

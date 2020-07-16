@@ -50,18 +50,19 @@ library FixedPoint {
         return uq144x112(z);
     }
 
-    // multiply a UQ112x112 by an int and decode, returning an int
-    // reverts on overflow
-    function muli(uq112x112 memory self, int y) internal pure returns (int) {
-        uint144 z = decode144(mul(self, uint(y < 0 ? -y : y)));
-        return y < 0 ? -z : z;
-    }
-
     // divide a UQ112x112 by a uint112, returning a UQ112x112
     function div(uq112x112 memory self, uint112 y) internal pure returns (uq112x112 memory) {
         require(y != 0, 'FixedPoint: DIV_BY_ZERO');
         return uq112x112(self._x / y);
     }
+
+    // multiply a UQ112x112 by an int and decode, returning an int
+    // reverts on overflow
+    function muli(uq112x112 memory self, int y) internal pure returns (int) {
+        uint144 z = decode144(mul(self, uint(y < 0 ? -y : y)));
+        return y < 0 ? -int(z) : z;
+    }
+
 
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator
     // equivalent to encode(numerator).div(denominator)
