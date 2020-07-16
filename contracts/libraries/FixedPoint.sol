@@ -58,9 +58,9 @@ library FixedPoint {
     }
 
     // divide a UQ112x112 by a uint112, returning a UQ112x112
-    function div(uq112x112 memory self, uint112 x) internal pure returns (uq112x112 memory) {
-        require(x != 0, 'FixedPoint: DIV_BY_ZERO');
-        return uq112x112(self._x / x);
+    function div(uq112x112 memory self, uint112 y) internal pure returns (uq112x112 memory) {
+        require(y != 0, 'FixedPoint: DIV_BY_ZERO');
+        return uq112x112(self._x / y);
     }
 
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator
