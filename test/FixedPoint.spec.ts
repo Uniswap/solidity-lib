@@ -104,7 +104,7 @@ describe('FixedPoint', () => {
 
     it('fails with 0 denominator', async () => {
       await expect(fixedPoint.fraction(BigNumber.from(1), BigNumber.from(0))).to.be.revertedWith(
-        'FixedPoint: DIV_BY_ZERO'
+        'FixedPoint: DIV_BY_ZERO_FRACTION'
       )
     })
   })
@@ -114,7 +114,7 @@ describe('FixedPoint', () => {
       expect((await fixedPoint.reciprocal([Q112.mul(BigNumber.from(25)).div(100)]))[0]).to.eq(Q112.mul(4))
     })
     it('fails for 0', async () => {
-      await expect(fixedPoint.reciprocal([BigNumber.from(0)])).to.be.revertedWith('FixedPoint: ZERO_RECIPROCAL')
+      await expect(fixedPoint.reciprocal([BigNumber.from(0)])).to.be.revertedWith('FixedPoint: DIV_BY_ZERO_RECIPROCAL')
     })
     it('works for 5', async () => {
       expect((await fixedPoint.reciprocal([Q112.mul(BigNumber.from(5))]))[0]).to.eq(Q112.mul(BigNumber.from(1)).div(5))
