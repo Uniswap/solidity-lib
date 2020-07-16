@@ -25,11 +25,24 @@ describe('Babylonian', () => {
     babylonian = await deployContract(wallet, BabylonianTest, [], overrides)
   })
 
-  describe('#sqrt', () => {
+  describe.only('#sqrt', () => {
     it('works for 0-99', async () => {
       for (let i = 0; i < 100; i++) {
         expect(await babylonian.sqrt(i)).to.eq(Math.floor(Math.sqrt(i)))
       }
+    })
+
+    it('product of numbers close to max uint112', async () => {
+      const max = BigNumber.from(2).pow(112).sub(1)
+      expect(await babylonian.sqrt(max.mul(max))).to.eq(max)
+      const maxMinus1 = BigNumber.from(2).pow(112).sub(2)
+      expect(await babylonian.sqrt(maxMinus1.mul(maxMinus1))).to.eq(maxMinus1)
+      const maxMinus2 = BigNumber.from(2).pow(112).sub(3)
+      expect(await babylonian.sqrt(maxMinus2.mul(maxMinus2))).to.eq(maxMinus2)
+
+      expect(await babylonian.sqrt(max.mul(maxMinus1))).to.eq(maxMinus1)
+      expect(await babylonian.sqrt(max.mul(maxMinus2))).to.eq(maxMinus2)
+      expect(await babylonian.sqrt(maxMinus1.mul(maxMinus2))).to.eq(maxMinus2)
     })
 
     it('max uint256', async () => {
