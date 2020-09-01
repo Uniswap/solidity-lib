@@ -18,9 +18,11 @@
     "node": ">=10"
   },
   "devDependencies": {
+    "@harmony-js/core": "^0.1.53",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "chai": "^4.2.0",
+    "dotenv": "^8.2.0",
     "ethereum-waffle": "^3.0.0",
     "mocha": "^7.1.1",
     "prettier": "^2.0.4",
@@ -30,12 +32,16 @@
     "typescript": "^3.8.3"
   },
   "scripts": {
+    "abi": "npm run build; ./scripts/abi.sh",
+    "build": "./scripts/build.sh",
+    "clean": "rm -rf node_modules build/contracts",
     "lint": "prettier ./test/*.ts --check",
     "precompile": "rimraf ./build/",
     "compile": "waffle",
     "pretest": "yarn compile",
     "test": "mocha",
-    "prepublishOnly": "yarn test"
+    "prepublishOnly": "yarn test",
+    "deploy": "./scripts/deploy.sh"
   },
   "license": "GPL-3.0-or-later"
 }
