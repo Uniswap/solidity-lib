@@ -4,7 +4,7 @@ pragma solidity >=0.5.0;
 
 import './SafeHRC20Namer.sol';
 
-// produces names for pairs of tokens using Uniswap's naming scheme
+// produces names for pairs of tokens using Swoop's naming scheme
 library PairNamer {
     string private constant TOKEN_SYMBOL_PREFIX = '🦄';
     string private constant TOKEN_SEPARATOR = ':';

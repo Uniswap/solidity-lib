@@ -1,18 +1,18 @@
 {
-  "name": "@uniswap/lib",
+  "name": "@harmony-swoop/lib",
   "version": "1.1.2",
-  "description": "📖 Solidity libraries that are shared across Uniswap contracts",
+  "description": "📖 Solidity libraries that are shared across Swoop contracts",
   "files": [
     "contracts",
     "!contracts/test"
   ],
-  "homepage": "https://uniswap.org",
+  "homepage": "https://swoop.hmny.io",
   "repository": {
-    "url": "https://github.com/Uniswap/uniswap-lib",
+    "url": "git+https://github.com/harmony-one/swoop-lib.git",
     "type": "git"
   },
   "bugs": {
-    "url": "https://github.com/Uniswap/uniswap-lib/issues"
+    "url": "https://github.com/harmony-one/swoop-lib/issues"
   },
   "engines": {
     "node": ">=10"
@@ -41,7 +41,17 @@
     "pretest": "yarn compile",
     "test": "mocha",
     "prepublishOnly": "yarn test",
-    "deploy": "./scripts/deploy.sh"
+    "deploy": "./scripts/deploy.sh",
+    "publish": "npm publish --access public"
   },
-  "license": "GPL-3.0-or-later"
+  "license": "GPL-3.0-or-later",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "keywords": [
+    "swoop"
+  ],
+  "author": "harmony-one"
 }
