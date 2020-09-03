@@ -3,7 +3,7 @@ rm -rf build/abi
 mkdir -p build/abi
 
 contracts=(
-UniswapV2ERC20
+UniswapV2HRC20
 UniswapV2Factory
 UniswapV2Pair
 )

@@ -2,7 +2,7 @@
 
 pragma solidity >=0.6.0;
 
-// helper methods for interacting with ERC20 tokens and sending ETH that do not consistently return true/false
+// helper methods for interacting with HRC20 tokens and sending ONE that do not consistently return true/false
 library TransferHelper {
     function safeApprove(address token, address to, uint value) internal {
         // bytes4(keccak256(bytes('approve(address,uint256)')));
@@ -22,8 +22,8 @@ library TransferHelper {
         require(success && (data.length == 0 || abi.decode(data, (bool))), 'TransferHelper: TRANSFER_FROM_FAILED');
     }
 
-    function safeTransferETH(address to, uint value) internal {
+    function safeTransferONE(address to, uint value) internal {
         (bool success,) = to.call.value(value)(new bytes(0));
-        require(success, 'TransferHelper: ETH_TRANSFER_FAILED');
+        require(success, 'TransferHelper: ONE_TRANSFER_FAILED');
     }
 }
