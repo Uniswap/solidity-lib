@@ -14,7 +14,7 @@ contract PairNamerTest {
     }
 }
 
-// we do not test with non compliant ERC20 implementations because that's handled by token namer
+// we do not test with non compliant HRC20 implementations because that's handled by token namer
 contract PairNamerTestFakeToken {
     string public name;
     string public symbol;

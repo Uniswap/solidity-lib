@@ -20,14 +20,14 @@ const network = new Network(argv.network);
 network.hmy.wallet.addByPrivateKey(network.privateKeys.deployer);
 
 const contracts = [
-    'AddressStringUtil', 'Babylonian', 'FixedPoint', 'PairNamer', 'SafeERC20Namer', 'TransferHelper'
+    'AddressStringUtil', 'Babylonian', 'FixedPoint', 'PairNamer', 'SafeHRC20Namer', 'TransferHelper'
 ];
 
 async function deploy() {
   for (let i = 0; i < contracts.length; i++) {
     const contract = contracts[i];
     const addr = await deployContract(contract);
-	console.log(`    Deployed contract ${contract}: ${addr} (${getAddress(addr).bech32})`);
+    console.log(`    Deployed contract ${contract}: ${addr} (${getAddress(addr).bech32})`);
   }
 }
 

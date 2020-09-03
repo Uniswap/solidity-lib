@@ -4,8 +4,8 @@ import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
 
 import TransferHelperTest from '../build/TransferHelperTest.json'
 import FakeFallback from '../build/TransferHelperTestFakeFallback.json'
-import FakeERC20Noncompliant from '../build/TransferHelperTestFakeERC20Noncompliant.json'
-import FakeERC20Compliant from '../build/TransferHelperTestFakeERC20Compliant.json'
+import FakeHRC20Noncompliant from '../build/TransferHelperTestFakeHRC20Noncompliant.json'
+import FakeHRC20Compliant from '../build/TransferHelperTestFakeHRC20Compliant.json'
 
 chai.use(solidity)
 
@@ -30,8 +30,8 @@ describe('TransferHelper', () => {
   before(async () => {
     transferHelper = await deployContract(wallet, TransferHelperTest, [], overrides)
     fakeFallback = await deployContract(wallet, FakeFallback, [], overrides)
-    fakeNoncompliant = await deployContract(wallet, FakeERC20Noncompliant, [], overrides)
-    fakeCompliant = await deployContract(wallet, FakeERC20Compliant, [], overrides)
+    fakeNoncompliant = await deployContract(wallet, FakeHRC20Noncompliant, [], overrides)
+    fakeCompliant = await deployContract(wallet, FakeHRC20Compliant, [], overrides)
   })
 
   // sets up the fixtures for each token situation that should be tested
@@ -89,15 +89,15 @@ describe('TransferHelper', () => {
     })
   })
 
-  describe('#safeTransferETH', () => {
+  describe('#safeTransferONE', () => {
     it('succeeds call not reverted', async () => {
       await fakeFallback.setup(false)
-      await transferHelper.safeTransferETH(fakeFallback.address, 0)
+      await transferHelper.safeTransferONE(fakeFallback.address, 0)
     })
     it('fails if call reverts', async () => {
       await fakeFallback.setup(true)
-      await expect(transferHelper.safeTransferETH(fakeFallback.address, 0)).to.be.revertedWith(
-        'TransferHelper: ETH_TRANSFER_FAILED'
+      await expect(transferHelper.safeTransferONE(fakeFallback.address, 0)).to.be.revertedWith(
+        'TransferHelper: ONE_TRANSFER_FAILED'
       )
     })
   })

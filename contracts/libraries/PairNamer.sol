@@ -2,7 +2,7 @@
 
 pragma solidity >=0.5.0;
 
-import './SafeERC20Namer.sol';
+import './SafeHRC20Namer.sol';
 
 // produces names for pairs of tokens using Uniswap's naming scheme
 library PairNamer {
@@ -14,9 +14,9 @@ library PairNamer {
         return string(
             abi.encodePacked(
                 prefix,
-                SafeERC20Namer.tokenName(token0),
+                SafeHRC20Namer.tokenName(token0),
                 TOKEN_SEPARATOR,
-                SafeERC20Namer.tokenName(token1),
+                SafeHRC20Namer.tokenName(token1),
                 suffix
             )
         );
@@ -27,9 +27,9 @@ library PairNamer {
         return string(
             abi.encodePacked(
                 TOKEN_SYMBOL_PREFIX,
-                SafeERC20Namer.tokenSymbol(token0),
+                SafeHRC20Namer.tokenSymbol(token0),
                 TOKEN_SEPARATOR,
-                SafeERC20Namer.tokenSymbol(token1),
+                SafeHRC20Namer.tokenSymbol(token1),
                 suffix
             )
         );
