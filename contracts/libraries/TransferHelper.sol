@@ -23,7 +23,7 @@ library TransferHelper {
     }
 
     function safeTransferONE(address to, uint value) internal {
-        (bool success,) = to.call.value(value)(new bytes(0));
+        (bool success,) = to.call{value: value}(new bytes(0));
         require(success, 'TransferHelper: ONE_TRANSFER_FAILED');
     }
 }
