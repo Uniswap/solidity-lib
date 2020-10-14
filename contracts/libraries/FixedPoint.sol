@@ -77,7 +77,7 @@ library FixedPoint {
         return uq112x112(uint224(Q224 / self._x));
     }
 
-    // square root of a UQ112x112
+    // square root of a UQ112x112, lossy to 40 bits
     function sqrt(uq112x112 memory self) internal pure returns (uq112x112 memory) {
         return uq112x112(uint224(Babylonian.sqrt(uint(self._x) << 32) << 40));
     }
