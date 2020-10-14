@@ -16,8 +16,7 @@ contract SafeERC20NamerTest {
 }
 
 // does not implement name or symbol
-contract NamerTestFakeOptionalERC20 {
-}
+contract NamerTestFakeOptionalERC20 {}
 
 // complies with ERC20 and returns strings
 contract NamerTestFakeCompliantERC20 {

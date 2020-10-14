@@ -4,7 +4,7 @@ pragma solidity >=0.5.0;
 
 library AddressStringUtil {
     // converts an address to the uppercase hex string, extracting only len bytes (up to 20, multiple of 2)
-    function toAsciiString(address addr, uint len) pure internal returns (string memory) {
+    function toAsciiString(address addr, uint len) internal pure returns (string memory) {
         require(len % 2 == 0 && len > 0 && len <= 40, "AddressStringUtil: INVALID_LEN");
 
         bytes memory s = new bytes(len);
@@ -25,7 +25,7 @@ library AddressStringUtil {
     // hi and lo are only 4 bits and between 0 and 16
     // this method converts those values to the unicode/ascii code point for the hex representation
     // uses upper case for the characters
-    function char(uint8 b) pure private returns (byte c) {
+    function char(uint8 b) private pure returns (byte c) {
         if (b < 10) {
             return byte(b + 0x30);
         } else {
