@@ -156,6 +156,66 @@ describe('FixedPoint', () => {
     })
   })
 
+  describe('#muluq', () => {
+    it('works for 0', async () => {
+      expect((await fixedPoint.muluq([BigNumber.from(0)], [Q112]))[0]).to.eq(BigNumber.from(0))
+      expect((await fixedPoint.muluq([Q112], [BigNumber.from(0)]))[0]).to.eq(BigNumber.from(0))
+    })
+
+    it('multiplies 3*2', async () => {
+      expect((await fixedPoint.muluq([BigNumber.from(3).mul(Q112)], [BigNumber.from(2).mul(Q112)]))[0]).to.eq(
+        BigNumber.from(3).mul(2).mul(Q112)
+      )
+    })
+    function multiplyExpanded(self: BigNumber, other: BigNumber): BigNumber {
+      const upper = self.shr(112).mul(other.shr(112))
+      const lower = self.mask(112).mul(other.mask(112))
+      const uppersLowero = self.shr(112).mul(other.mask(112))
+      const upperoLowers = self.mask(112).mul(other.shr(112))
+      return upper.mul(Q112).add(uppersLowero).add(upperoLowers).add(lower.div(Q112))
+    }
+    it('multiplies 4/3*4/3', async () => {
+      const multiplier = BigNumber.from(4).mul(Q112).div(3)
+      const expectedResult = multiplyExpanded(multiplier, multiplier)
+      expect((await fixedPoint.muluq([multiplier], [multiplier]))[0]).to.eq(expectedResult)
+      expect(expectedResult.add(1)).to.eq(BigNumber.from(16).mul(Q112).div(9)) // close to 16/9
+    })
+
+    it('overflow upper', async () => {
+      const multiplier1 = Q112.mul(2)
+      const multiplier2 = Q112.mul(Q112).div(2)
+      await expect(fixedPoint.muluq([multiplier1], [multiplier2])).to.be.revertedWith(
+        'FixedPoint: MULUQ_OVERFLOW_UPPER'
+      )
+      expect((await fixedPoint.muluq([multiplier1.sub(1)], [multiplier2]))[0]).to.eq(
+        multiplyExpanded(multiplier1.sub(1), multiplier2)
+      )
+      expect((await fixedPoint.muluq([multiplier1], [multiplier2.sub(1)]))[0]).to.eq(
+        multiplyExpanded(multiplier1, multiplier2.sub(1))
+      )
+    })
+  })
+
+  describe('#divuq', () => {
+    it('works for 0 numerator', async () => {
+      expect((await fixedPoint.divuq([BigNumber.from(0)], [Q112]))[0]).to.eq(BigNumber.from(0))
+    })
+
+    it('throws for 0 denominator', async () => {
+      await expect(fixedPoint.divuq([Q112], [BigNumber.from(0)])).to.be.revertedWith('FixedPoint: DIV_BY_ZERO_DIVUQ')
+    })
+
+    it('equality 30/30', async () => {
+      expect((await fixedPoint.divuq([BigNumber.from(30).mul(Q112)], [BigNumber.from(30).mul(Q112)]))[0]).to.eq(Q112)
+    })
+
+    it('divides 30/10', async () => {
+      expect((await fixedPoint.divuq([BigNumber.from(30).mul(Q112)], [BigNumber.from(10).mul(Q112)]))[0]).to.eq(
+        BigNumber.from(3).mul(Q112).sub(18) // close to 3
+      )
+    })
+  })
+
   describe('#fraction', () => {
     it('correct computation less than 1', async () => {
       expect((await fixedPoint.fraction(4, 100))[0]).to.eq(BigNumber.from(4).mul(Q112).div(100))

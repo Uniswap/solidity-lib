@@ -30,6 +30,22 @@ contract FixedPointTest {
         return FixedPoint.muli(self, y);
     }
 
+    function muluq(FixedPoint.uq112x112 calldata self, FixedPoint.uq112x112 calldata other)
+        external
+        pure
+        returns (FixedPoint.uq112x112 memory)
+    {
+        return FixedPoint.muluq(self, other);
+    }
+
+    function divuq(FixedPoint.uq112x112 calldata self, FixedPoint.uq112x112 calldata other)
+        external
+        pure
+        returns (FixedPoint.uq112x112 memory)
+    {
+        return FixedPoint.divuq(self, other);
+    }
+
     function fraction(uint112 numerator, uint112 denominator) external pure returns (FixedPoint.uq112x112 memory) {
         return FixedPoint.fraction(numerator, denominator);
     }
