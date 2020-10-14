@@ -81,7 +81,7 @@ describe('FixedPoint', () => {
       )
     })
     it('max without overflow, largest fixed point', async () => {
-      const maxMultiplier = BigNumber.from('4294967296')
+      const maxMultiplier = BigNumber.from(2).pow(32)
       expect((await fixedPoint.mul([BigNumber.from(2).pow(224).sub(1)], maxMultiplier))[0]).to.eq(
         BigNumber.from('115792089237316195423570985008687907853269984665640564039457584007908834672640')
       )
@@ -121,7 +121,7 @@ describe('FixedPoint', () => {
       ).to.be.revertedWith('FixedPoint: MULTIPLICATION_OVERFLOW')
     })
     it('max without overflow, largest fixed point', async () => {
-      const maxMultiplier = BigNumber.from('4294967296')
+      const maxMultiplier = BigNumber.from(2).pow(32)
       expect(await fixedPoint.muli([BigNumber.from(2).pow(224).sub(1)], maxMultiplier)).to.eq(
         BigNumber.from('22300745198530623141535718272648361505980415')
       )
@@ -174,10 +174,10 @@ describe('FixedPoint', () => {
 
   describe('#reciprocal', () => {
     it('fails for 0', async () => {
-      await expect(fixedPoint.reciprocal([BigNumber.from(0)])).to.be.revertedWith('FixedPoint: DIV_BY_ZERO_RECIPROCAL')
+      await expect(fixedPoint.reciprocal([BigNumber.from(0)])).to.be.revertedWith('FixedPoint: DIV_BY_ZERO_RECIPROCAL_OR_OVERFLOW')
     })
     it('fails for 1', async () => {
-      await expect(fixedPoint.reciprocal([BigNumber.from(1)])).to.be.revertedWith('FixedPoint: RECIPROCAL_OVERFLOW')
+      await expect(fixedPoint.reciprocal([BigNumber.from(1)])).to.be.revertedWith('FixedPoint: DIV_BY_ZERO_RECIPROCAL_OR_OVERFLOW')
     })
     it('works for 0.25', async () => {
       expect((await fixedPoint.reciprocal([Q112.mul(BigNumber.from(25)).div(100)]))[0]).to.eq(Q112.mul(4))

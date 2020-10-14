@@ -35,9 +35,9 @@ describe('Babylonian', () => {
     it('product of numbers close to max uint112', async () => {
       const max = BigNumber.from(2).pow(112).sub(1)
       expect(await babylonian.sqrt(max.mul(max))).to.eq(max)
-      const maxMinus1 = BigNumber.from(2).pow(112).sub(2)
+      const maxMinus1 = max.sub(1)
       expect(await babylonian.sqrt(maxMinus1.mul(maxMinus1))).to.eq(maxMinus1)
-      const maxMinus2 = BigNumber.from(2).pow(112).sub(3)
+      const maxMinus2 = max.sub(2)
       expect(await babylonian.sqrt(maxMinus2.mul(maxMinus2))).to.eq(maxMinus2)
 
       expect(await babylonian.sqrt(max.mul(maxMinus1))).to.eq(maxMinus1)

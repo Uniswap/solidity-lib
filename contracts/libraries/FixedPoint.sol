@@ -19,8 +19,8 @@ library FixedPoint {
     }
 
     uint8 private constant RESOLUTION = 112;
-    uint120 private constant Q112 = uint120(1) << RESOLUTION;
-    uint232 private constant Q224 = uint232(Q112) << RESOLUTION;
+    uint private constant Q112 = uint(1) << RESOLUTION;
+    uint private constant Q224 = Q112 << RESOLUTION;
 
     // encode a uint112 as a UQ112x112
     function encode(uint112 x) internal pure returns (uq112x112 memory) {
@@ -68,8 +68,7 @@ library FixedPoint {
     // reverts on overflow
     // lossy
     function reciprocal(uq112x112 memory self) internal pure returns (uq112x112 memory) {
-        require(self._x != 0, 'FixedPoint: DIV_BY_ZERO_RECIPROCAL');
-        require(self._x != 1, 'FixedPoint: RECIPROCAL_OVERFLOW');
+        require(self._x > 1, 'FixedPoint: DIV_BY_ZERO_RECIPROCAL_OR_OVERFLOW');
         return uq112x112(uint224(Q224 / self._x));
     }
 
