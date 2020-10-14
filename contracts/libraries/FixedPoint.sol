@@ -18,10 +18,10 @@ library FixedPoint {
         uint _x;
     }
 
-    uint224 private constant LOWER_MASK = 0xffffffffffffffffffffffffffff; // decimal of UQ*x112 (lower 112 bits)
-    uint8   private constant RESOLUTION = 112;
-    uint    private constant Q112 = uint(1) << RESOLUTION;
-    uint    private constant Q224 = Q112 << RESOLUTION;
+    uint8 private constant RESOLUTION = 112;
+    uint  private constant Q112 = uint(1) << RESOLUTION;
+    uint  private constant Q224 = Q112 << RESOLUTION;
+    uint  private constant LOWER_MASK = 0xffffffffffffffffffffffffffff; // decimal of UQ*x112 (lower 112 bits)
 
     // encode a uint112 as a UQ112x112
     function encode(uint112 x) internal pure returns (uq112x112 memory) {
