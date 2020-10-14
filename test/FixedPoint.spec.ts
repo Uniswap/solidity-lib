@@ -91,6 +91,22 @@ describe('FixedPoint', () => {
         BigNumber.from(2).pow(224)
       )
     })
+    it('max without overflow, largest fixed point', async () => {
+      const maxMultiplier = BigNumber.from('4294967296')
+      expect((await fixedPoint.mul([BigNumber.from(2).pow(224).sub(1)], maxMultiplier))[0]).to.eq(
+        BigNumber.from('115792089237316195423570985008687907853269984665640564039457584007908834672640')
+      )
+      await expect(fixedPoint.mul([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.add(1))).to.be.revertedWith(
+        'FixedPoint: MULTIPLICATION_OVERFLOW'
+      )
+    })
+    it('max without overflow, smallest fixed point', async () => {
+      const maxUint = BigNumber.from(2).pow(256).sub(1)
+      expect((await fixedPoint.mul([BigNumber.from(1)], maxUint))[0]).to.eq(maxUint)
+      await expect(fixedPoint.mul([BigNumber.from(2)], maxUint)).to.be.revertedWith(
+        'FixedPoint: MULTIPLICATION_OVERFLOW'
+      )
+    })
   })
 
   describe('#muli', () => {
@@ -107,10 +123,6 @@ describe('FixedPoint', () => {
       expect(await fixedPoint.muli([BigNumber.from(3).mul(Q112)], BigNumber.from(-2))).to.eq(BigNumber.from(-6))
     })
 
-    it('works for 3*-2', async () => {
-      expect(await fixedPoint.muli([BigNumber.from(3).mul(Q112)], BigNumber.from(-2))).to.eq(BigNumber.from(-6))
-    })
-
     it('overflow', async () => {
       await expect(fixedPoint.muli([BigNumber.from(1).mul(Q112)], BigNumber.from(2).pow(144))).to.be.revertedWith(
         'FixedPoint: MULTIPLICATION_OVERFLOW'
@@ -118,6 +130,40 @@ describe('FixedPoint', () => {
       await expect(
         fixedPoint.muli([BigNumber.from(1).mul(Q112)], BigNumber.from(2).pow(144).mul(-1))
       ).to.be.revertedWith('FixedPoint: MULTIPLICATION_OVERFLOW')
+    })
+    it('max without overflow, largest fixed point', async () => {
+      const maxMultiplier = BigNumber.from('4294967296')
+      expect(await fixedPoint.muli([BigNumber.from(2).pow(224).sub(1)], maxMultiplier)).to.eq(
+        BigNumber.from('22300745198530623141535718272648361505980415')
+      )
+      await expect(fixedPoint.muli([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.add(1))).to.be.revertedWith(
+        'FixedPoint: MULTIPLICATION_OVERFLOW'
+      )
+      // negative version
+      expect(await fixedPoint.muli([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.mul(-1))).to.eq(
+        BigNumber.from('22300745198530623141535718272648361505980415').mul(-1)
+      )
+      await expect(
+        fixedPoint.muli([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.add(1).mul(-1))
+      ).to.be.revertedWith('FixedPoint: MULTIPLICATION_OVERFLOW')
+    })
+
+    it('max without overflow, smallest fixed point', async () => {
+      const maxInt = BigNumber.from(2).pow(255).sub(1)
+      expect(await fixedPoint.muli([BigNumber.from(2)], maxInt)).to.eq(
+        BigNumber.from('22300745198530623141535718272648361505980415')
+      )
+      await expect(fixedPoint.muli([BigNumber.from(3)], maxInt)).to.be.revertedWith(
+        'FixedPoint: MULTIPLICATION_OVERFLOW'
+      )
+      // negative version
+      const minInt = BigNumber.from(2).pow(255).mul(-1)
+      expect(await fixedPoint.muli([BigNumber.from(1)], minInt)).to.eq(
+        BigNumber.from('11150372599265311570767859136324180752990208').mul(-1)
+      )
+      await expect(fixedPoint.muli([BigNumber.from(2)], minInt)).to.be.revertedWith(
+        'FixedPoint: MULTIPLICATION_OVERFLOW'
+      )
     })
   })
 
