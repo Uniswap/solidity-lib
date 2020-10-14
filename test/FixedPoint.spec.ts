@@ -64,17 +64,6 @@ describe('FixedPoint', () => {
     })
   })
 
-  describe('#div', () => {
-    it('correct division', async () => {
-      expect((await fixedPoint.div([BigNumber.from(3).mul(Q112)], BigNumber.from(2)))[0]).to.eq(
-        BigNumber.from(3).mul(Q112).div(2)
-      )
-    })
-    it('throws for div by zero', async () => {
-      await expect(fixedPoint.div([BigNumber.from(3).mul(Q112)], 0)).to.be.revertedWith('FixedPoint: DIV_BY_ZERO')
-    })
-  })
-
   describe('#mul', () => {
     it('correct multiplication', async () => {
       expect((await fixedPoint.mul([BigNumber.from(3).mul(Q112)], BigNumber.from(2)))[0]).to.eq(
@@ -184,11 +173,14 @@ describe('FixedPoint', () => {
   })
 
   describe('#reciprocal', () => {
-    it('works for 0.25', async () => {
-      expect((await fixedPoint.reciprocal([Q112.mul(BigNumber.from(25)).div(100)]))[0]).to.eq(Q112.mul(4))
-    })
     it('fails for 0', async () => {
       await expect(fixedPoint.reciprocal([BigNumber.from(0)])).to.be.revertedWith('FixedPoint: DIV_BY_ZERO_RECIPROCAL')
+    })
+    it('fails for 1', async () => {
+      await expect(fixedPoint.reciprocal([BigNumber.from(1)])).to.be.revertedWith('FixedPoint: RECIPROCAL_OVERFLOW')
+    })
+    it('works for 0.25', async () => {
+      expect((await fixedPoint.reciprocal([Q112.mul(BigNumber.from(25)).div(100)]))[0]).to.eq(Q112.mul(4))
     })
     it('works for 5', async () => {
       expect((await fixedPoint.reciprocal([Q112.mul(BigNumber.from(5))]))[0]).to.eq(Q112.mul(BigNumber.from(1)).div(5))

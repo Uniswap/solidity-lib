@@ -50,12 +50,6 @@ library FixedPoint {
         return uq144x112(z);
     }
 
-    // divide a UQ112x112 by a uint112, returning a UQ112x112
-    function div(uq112x112 memory self, uint112 y) internal pure returns (uq112x112 memory) {
-        require(y != 0, 'FixedPoint: DIV_BY_ZERO');
-        return uq112x112(self._x / y);
-    }
-
     // multiply a UQ112x112 by an int and decode, returning an int
     // reverts on overflow
     function muli(uq112x112 memory self, int y) internal pure returns (int) {
@@ -63,21 +57,24 @@ library FixedPoint {
         return y < 0 ? -int(z) : z;
     }
 
-
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator
-    // equivalent to encode(numerator).div(denominator)
+    // lossy
     function fraction(uint112 numerator, uint112 denominator) internal pure returns (uq112x112 memory) {
         require(denominator > 0, "FixedPoint: DIV_BY_ZERO_FRACTION");
         return uq112x112((uint224(numerator) << RESOLUTION) / denominator);
     }
 
     // take the reciprocal of a UQ112x112
+    // reverts on overflow
+    // lossy
     function reciprocal(uq112x112 memory self) internal pure returns (uq112x112 memory) {
         require(self._x != 0, 'FixedPoint: DIV_BY_ZERO_RECIPROCAL');
+        require(self._x != 1, 'FixedPoint: RECIPROCAL_OVERFLOW');
         return uq112x112(uint224(Q224 / self._x));
     }
 
-    // square root of a UQ112x112, lossy to 40 bits
+    // square root of a UQ112x112
+    // lossy to 40 bits
     function sqrt(uq112x112 memory self) internal pure returns (uq112x112 memory) {
         return uq112x112(uint224(Babylonian.sqrt(uint(self._x) << 32) << 40));
     }

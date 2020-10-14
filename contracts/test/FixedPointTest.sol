@@ -26,10 +26,6 @@ contract FixedPointTest {
         return FixedPoint.mul(self, y);
     }
 
-    function div(FixedPoint.uq112x112 calldata self, uint112 y) external pure returns (FixedPoint.uq112x112 memory) {
-        return FixedPoint.div(self, y);
-    }
-
     function muli(FixedPoint.uq112x112 calldata self, int y) external pure returns (int) {
         return FixedPoint.muli(self, y);
     }
