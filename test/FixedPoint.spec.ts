@@ -174,10 +174,14 @@ describe('FixedPoint', () => {
 
   describe('#reciprocal', () => {
     it('fails for 0', async () => {
-      await expect(fixedPoint.reciprocal([BigNumber.from(0)])).to.be.revertedWith('FixedPoint: DIV_BY_ZERO_RECIPROCAL_OR_OVERFLOW')
+      await expect(fixedPoint.reciprocal([BigNumber.from(0)])).to.be.revertedWith(
+        'FixedPoint: DIV_BY_ZERO_RECIPROCAL_OR_OVERFLOW'
+      )
     })
     it('fails for 1', async () => {
-      await expect(fixedPoint.reciprocal([BigNumber.from(1)])).to.be.revertedWith('FixedPoint: DIV_BY_ZERO_RECIPROCAL_OR_OVERFLOW')
+      await expect(fixedPoint.reciprocal([BigNumber.from(1)])).to.be.revertedWith(
+        'FixedPoint: DIV_BY_ZERO_RECIPROCAL_OR_OVERFLOW'
+      )
     })
     it('works for 0.25', async () => {
       expect((await fixedPoint.reciprocal([Q112.mul(BigNumber.from(25)).div(100)]))[0]).to.eq(Q112.mul(4))
