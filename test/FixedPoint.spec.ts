@@ -1,6 +1,6 @@
-import chai, {expect} from 'chai'
-import {Contract, BigNumber} from 'ethers'
-import {solidity, MockProvider, deployContract} from 'ethereum-waffle'
+import chai, { expect } from 'chai'
+import { Contract, BigNumber } from 'ethers'
+import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
 
 import FixedPointTest from '../build/FixedPointTest.json'
 
@@ -205,7 +205,36 @@ describe('FixedPoint', () => {
 
     it('divides 30/10', async () => {
       expect((await fixedPoint.divuq([BigNumber.from(30).mul(Q112)], [BigNumber.from(10).mul(Q112)]))[0]).to.eq(
-        BigNumber.from(3).mul(Q112).sub(18) // close to 3
+        BigNumber.from(3).mul(Q112)
+      )
+    })
+
+    it('boundary of full precision', async () => {
+      const maxNumeratorFullPrecision = BigNumber.from(2).pow(144).sub(1)
+      const minDenominatorFullPrecision = BigNumber.from('4294967296') // ceiling(uint144(-1) * Q112 / uint224(-1))
+
+      expect((await fixedPoint.divuq([maxNumeratorFullPrecision], [minDenominatorFullPrecision]))[0]).to.eq(
+        BigNumber.from('26959946667150639794667015087019630673637143213614752866474435543040')
+      )
+
+      await expect(
+        fixedPoint.divuq([maxNumeratorFullPrecision.add(1)], [minDenominatorFullPrecision])
+      ).to.be.revertedWith('FixedPoint: MULUQ_OVERFLOW_UPPER')
+
+      await expect(
+        fixedPoint.divuq([maxNumeratorFullPrecision], [minDenominatorFullPrecision.sub(1)])
+      ).to.be.revertedWith('FixedPoint: MULUQ_OVERFLOW_SUM')
+    })
+
+    it('imprecision', async () => {
+      const numerator = BigNumber.from(2).pow(144)
+
+      expect((await fixedPoint.divuq([numerator], [numerator.sub(1)]))[0]).to.eq(
+        BigNumber.from('5192296858534827628530496329220096')
+      )
+
+      expect((await fixedPoint.divuq([numerator], [numerator.add(1)]))[0]).to.eq(
+        BigNumber.from('5192296858534827628530496329220095').sub(BigNumber.from(2).pow(32).sub(1))
       )
     })
   })

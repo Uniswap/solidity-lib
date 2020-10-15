@@ -102,6 +102,12 @@ library FixedPoint {
         if (self._x == other._x) {
             return uq112x112(uint224(Q112));
         }
+        if (self._x <= uint144(-1)) {
+            uint256 value = (uint256(self._x) << RESOLUTION) / other._x;
+            if (value <= uint224(-1)) {
+                return uq112x112(uint224(value));
+            }
+        }
         return muluq(self, reciprocal(other));
     }
 
