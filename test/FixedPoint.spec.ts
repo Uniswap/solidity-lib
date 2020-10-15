@@ -223,7 +223,7 @@ describe('FixedPoint', () => {
 
       await expect(
         fixedPoint.divuq([maxNumeratorFullPrecision], [minDenominatorFullPrecision.sub(1)])
-      ).to.be.revertedWith('FixedPoint: MULUQ_OVERFLOW_SUM')
+      ).to.be.revertedWith('FixedPoint: DIVUQ_OVERFLOW')
     })
 
     it('imprecision', async () => {

@@ -104,9 +104,8 @@ library FixedPoint {
         }
         if (self._x <= uint144(-1)) {
             uint256 value = (uint256(self._x) << RESOLUTION) / other._x;
-            if (value <= uint224(-1)) {
-                return uq112x112(uint224(value));
-            }
+            require(value <= uint224(-1), 'FixedPoint: DIVUQ_OVERFLOW');
+            return uq112x112(uint224(value));
         }
         return muluq(self, reciprocal(other));
     }
