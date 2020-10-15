@@ -15,13 +15,13 @@ library FixedPoint {
     // range: [0, 2**144 - 1]
     // resolution: 1 / 2**112
     struct uq144x112 {
-        uint _x;
+        uint256 _x;
     }
 
     uint8 private constant RESOLUTION = 112;
-    uint  private constant Q112 = uint(1) << RESOLUTION;
-    uint  private constant Q224 = Q112 << RESOLUTION;
-    uint  private constant LOWER_MASK = 0xffffffffffffffffffffffffffff; // decimal of UQ*x112 (lower 112 bits)
+    uint256 private constant Q112 = uint256(1) << RESOLUTION;
+    uint256 private constant Q224 = Q112 << RESOLUTION;
+    uint256 private constant LOWER_MASK = 0xffffffffffffffffffffffffffff; // decimal of UQ*x112 (lower 112 bits)
 
     // encode a uint112 as a UQ112x112
     function encode(uint112 x) internal pure returns (uq112x112 memory) {
@@ -30,7 +30,7 @@ library FixedPoint {
 
     // encodes a uint144 as a UQ144x112
     function encode144(uint144 x) internal pure returns (uq144x112 memory) {
-        return uq144x112(uint(x) << RESOLUTION);
+        return uq144x112(uint256(x) << RESOLUTION);
     }
 
     // decode a UQ112x112 into a uint112 by truncating after the radix point
@@ -45,17 +45,17 @@ library FixedPoint {
 
     // multiply a UQ112x112 by a uint, returning a UQ144x112
     // reverts on overflow
-    function mul(uq112x112 memory self, uint y) internal pure returns (uq144x112 memory) {
-        uint z;
-        require(y == 0 || (z = self._x * y) / y == self._x, "FixedPoint: MUL_OVERFLOW");
+    function mul(uq112x112 memory self, uint256 y) internal pure returns (uq144x112 memory) {
+        uint256 z;
+        require(y == 0 || (z = self._x * y) / y == self._x, 'FixedPoint: MUL_OVERFLOW');
         return uq144x112(z);
     }
 
     // multiply a UQ112x112 by an int and decode, returning an int
     // reverts on overflow
-    function muli(uq112x112 memory self, int y) internal pure returns (int) {
-        uint144 z = decode144(mul(self, uint(y < 0 ? -y : y)));
-        return y < 0 ? -int(z) : z;
+    function muli(uq112x112 memory self, int256 y) internal pure returns (int256) {
+        uint144 z = decode144(mul(self, uint256(y < 0 ? -y : y)));
+        return y < 0 ? -int256(z) : z;
     }
 
     // multiply a UQ112x112 by a UQ112x112, returning a UQ112x112
@@ -80,13 +80,13 @@ library FixedPoint {
         uint224 uppero_lowers = uint224(upper_other) * lower_self; // * 2^-112
 
         // so the bit shift does not overflow
-        require(upper <= uint112(-1), "FixedPoint: MULUQ_OVERFLOW_UPPER");
+        require(upper <= uint112(-1), 'FixedPoint: MULUQ_OVERFLOW_UPPER');
 
         // this cannot exceed 256 bits, all values are 224 bits
-        uint sum = uint(upper << RESOLUTION) + uppers_lowero + uppero_lowers + (lower >> RESOLUTION);
+        uint256 sum = uint256(upper << RESOLUTION) + uppers_lowero + uppero_lowers + (lower >> RESOLUTION);
 
         // so the cast does not overflow
-        require(sum <= uint224(-1), "FixedPoint: MULUQ_OVERFLOW_SUM");
+        require(sum <= uint224(-1), 'FixedPoint: MULUQ_OVERFLOW_SUM');
 
         return uq112x112(uint224(sum));
     }
@@ -98,7 +98,7 @@ library FixedPoint {
         pure
         returns (FixedPoint.uq112x112 memory)
     {
-        require(other._x > 0, "FixedPoint: DIV_BY_ZERO_DIVUQ");
+        require(other._x > 0, 'FixedPoint: DIV_BY_ZERO_DIVUQ');
         if (self._x == other._x) {
             return uq112x112(uint224(Q112));
         }
@@ -108,7 +108,7 @@ library FixedPoint {
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator
     // lossy
     function fraction(uint112 numerator, uint112 denominator) internal pure returns (uq112x112 memory) {
-        require(denominator > 0, "FixedPoint: DIV_BY_ZERO_FRACTION");
+        require(denominator > 0, 'FixedPoint: DIV_BY_ZERO_FRACTION');
         return uq112x112((uint224(numerator) << RESOLUTION) / denominator);
     }
 
@@ -123,6 +123,6 @@ library FixedPoint {
     // square root of a UQ112x112
     // lossy to 40 bits
     function sqrt(uq112x112 memory self) internal pure returns (uq112x112 memory) {
-        return uq112x112(uint224(Babylonian.sqrt(uint(self._x) << 32) << 40));
+        return uq112x112(uint224(Babylonian.sqrt(uint256(self._x) << 32) << 40));
     }
 }

@@ -1,6 +1,6 @@
-import chai, { expect } from 'chai'
-import { Contract, constants } from 'ethers'
-import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
+import chai, {expect} from 'chai'
+import {Contract, constants} from 'ethers'
+import {solidity, MockProvider, deployContract} from 'ethereum-waffle'
 
 import AddressStringUtilTest from '../build/AddressStringUtilTest.json'
 

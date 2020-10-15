@@ -3,7 +3,7 @@
 pragma solidity >=0.5.0;
 pragma experimental ABIEncoderV2;
 
-import "../libraries/FixedPoint.sol";
+import '../libraries/FixedPoint.sol';
 
 contract FixedPointTest {
     function encode(uint112 x) external pure returns (FixedPoint.uq112x112 memory) {
@@ -22,11 +22,11 @@ contract FixedPointTest {
         return FixedPoint.decode144(self);
     }
 
-    function mul(FixedPoint.uq112x112 calldata self, uint y) external pure returns (FixedPoint.uq144x112 memory) {
+    function mul(FixedPoint.uq112x112 calldata self, uint256 y) external pure returns (FixedPoint.uq144x112 memory) {
         return FixedPoint.mul(self, y);
     }
 
-    function muli(FixedPoint.uq112x112 calldata self, int y) external pure returns (int) {
+    function muli(FixedPoint.uq112x112 calldata self, int256 y) external pure returns (int256) {
         return FixedPoint.muli(self, y);
     }
 

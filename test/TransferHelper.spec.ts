@@ -1,6 +1,6 @@
-import chai, { expect } from 'chai'
-import { Contract, constants } from 'ethers'
-import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
+import chai, {expect} from 'chai'
+import {Contract, constants} from 'ethers'
+import {solidity, MockProvider, deployContract} from 'ethereum-waffle'
 
 import TransferHelperTest from '../build/TransferHelperTest.json'
 import FakeFallback from '../build/TransferHelperTestFakeFallback.json'
@@ -35,13 +35,7 @@ describe('TransferHelper', () => {
   })
 
   // sets up the fixtures for each token situation that should be tested
-  function harness({
-    sendTx,
-    expectedError,
-  }: {
-    sendTx: (tokenAddress: string) => Promise<void>
-    expectedError: string
-  }) {
+  function harness({sendTx, expectedError}: {sendTx: (tokenAddress: string) => Promise<void>; expectedError: string}) {
     it('succeeds with compliant with no revert and true return', async () => {
       await fakeCompliant.setup(true, false)
       await sendTx(fakeCompliant.address)

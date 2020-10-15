@@ -1,6 +1,6 @@
-import chai, { expect } from 'chai'
-import { Contract } from 'ethers'
-import { solidity, MockProvider, deployContract } from 'ethereum-waffle'
+import chai, {expect} from 'chai'
+import {Contract} from 'ethers'
+import {solidity, MockProvider, deployContract} from 'ethereum-waffle'
 
 import PairNamerTest from '../build/PairNamerTest.json'
 import PairNamerTestFakeToken from '../build/PairNamerTestFakeToken.json'

@@ -6,7 +6,7 @@ import '../libraries/Babylonian.sol';
 
 // used for testing the logic of token naming
 contract BabylonianTest {
-    function sqrt(uint num) public pure returns (uint)  {
+    function sqrt(uint256 num) public pure returns (uint256) {
         return Babylonian.sqrt(num);
     }
 }
