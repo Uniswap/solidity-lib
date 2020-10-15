@@ -60,11 +60,7 @@ library FixedPoint {
 
     // multiply a UQ112x112 by a UQ112x112, returning a UQ112x112
     // lossy
-    function muluq(FixedPoint.uq112x112 memory self, FixedPoint.uq112x112 memory other)
-        internal
-        pure
-        returns (uq112x112 memory)
-    {
+    function muluq(uq112x112 memory self, uq112x112 memory other) internal pure returns (uq112x112 memory) {
         if (self._x == 0 || other._x == 0) {
             return uq112x112(0);
         }
@@ -93,11 +89,7 @@ library FixedPoint {
 
     // divide a UQ112x112 by a UQ112x112, returning a UQ112x112
     // lossy
-    function divuq(FixedPoint.uq112x112 memory self, FixedPoint.uq112x112 memory other)
-        internal
-        pure
-        returns (FixedPoint.uq112x112 memory)
-    {
+    function divuq(uq112x112 memory self, uq112x112 memory other) internal pure returns (uq112x112 memory) {
         require(other._x > 0, 'FixedPoint: DIV_BY_ZERO_DIVUQ');
         if (self._x == other._x) {
             return uq112x112(uint224(Q112));
@@ -107,7 +99,31 @@ library FixedPoint {
             require(value <= uint224(-1), 'FixedPoint: DIVUQ_OVERFLOW');
             return uq112x112(uint224(value));
         }
-        return muluq(self, reciprocal(other));
+
+        // long division, bit by bit
+        uint256 remainder = uint256(self._x);
+        uint256 divisor = uint256(other._x);
+
+        uint256 quotient = 0;
+        uint256 base = 112;
+
+        while (remainder > 0 && quotient <= uint224(-1)) {
+            uint256 partialQuotient = (remainder / divisor) << base;
+            remainder = remainder % divisor;
+
+            // safe add
+            uint256 sum = quotient + partialQuotient;
+            require(sum >= quotient, 'FixedPoint: DIVUQ_OVERFLOW');
+            quotient = sum;
+
+            remainder <<= 1;
+            if (base == 0) break;
+            base--;
+        }
+
+        require(quotient <= uint224(-1), 'FixedPoint: DIVUQ_OVERFLOW');
+
+        return uq112x112(uint224(quotient));
     }
 
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator
