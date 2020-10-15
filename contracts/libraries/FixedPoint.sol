@@ -19,8 +19,9 @@ library FixedPoint {
     }
 
     uint8 private constant RESOLUTION = 112;
-    uint private constant Q112 = uint(1) << RESOLUTION;
-    uint private constant Q224 = Q112 << RESOLUTION;
+    uint  private constant Q112 = uint(1) << RESOLUTION;
+    uint  private constant Q224 = Q112 << RESOLUTION;
+    uint  private constant LOWER_MASK = 0xffffffffffffffffffffffffffff; // decimal of UQ*x112 (lower 112 bits)
 
     // encode a uint112 as a UQ112x112
     function encode(uint112 x) internal pure returns (uq112x112 memory) {
@@ -46,7 +47,7 @@ library FixedPoint {
     // reverts on overflow
     function mul(uq112x112 memory self, uint y) internal pure returns (uq144x112 memory) {
         uint z;
-        require(y == 0 || (z = self._x * y) / y == self._x, "FixedPoint: MULTIPLICATION_OVERFLOW");
+        require(y == 0 || (z = self._x * y) / y == self._x, "FixedPoint: MUL_OVERFLOW");
         return uq144x112(z);
     }
 
@@ -55,6 +56,53 @@ library FixedPoint {
     function muli(uq112x112 memory self, int y) internal pure returns (int) {
         uint144 z = decode144(mul(self, uint(y < 0 ? -y : y)));
         return y < 0 ? -int(z) : z;
+    }
+
+    // multiply a UQ112x112 by a UQ112x112, returning a UQ112x112
+    // lossy
+    function muluq(FixedPoint.uq112x112 memory self, FixedPoint.uq112x112 memory other)
+        internal
+        pure
+        returns (uq112x112 memory)
+    {
+        if (self._x == 0 || other._x == 0) {
+            return uq112x112(0);
+        }
+        uint112 upper_self = uint112(self._x >> RESOLUTION); // * 2^0
+        uint112 lower_self = uint112(self._x & LOWER_MASK); // * 2^-112
+        uint112 upper_other = uint112(other._x >> RESOLUTION); // * 2^0
+        uint112 lower_other = uint112(other._x & LOWER_MASK); // * 2^-112
+
+        // partial products
+        uint224 upper = uint224(upper_self) * upper_other; // * 2^0
+        uint224 lower = uint224(lower_self) * lower_other; // * 2^-224
+        uint224 uppers_lowero = uint224(upper_self) * lower_other; // * 2^-112
+        uint224 uppero_lowers = uint224(upper_other) * lower_self; // * 2^-112
+
+        // so the bit shift does not overflow
+        require(upper <= uint112(-1), "FixedPoint: MULUQ_OVERFLOW_UPPER");
+
+        // this cannot exceed 256 bits, all values are 224 bits
+        uint sum = uint(upper << RESOLUTION) + uppers_lowero + uppero_lowers + (lower >> RESOLUTION);
+
+        // so the cast does not overflow
+        require(sum <= uint224(-1), "FixedPoint: MULUQ_OVERFLOW_SUM");
+
+        return uq112x112(uint224(sum));
+    }
+
+    // divide a UQ112x112 by a UQ112x112, returning a UQ112x112
+    // lossy
+    function divuq(FixedPoint.uq112x112 memory self, FixedPoint.uq112x112 memory other)
+        internal
+        pure
+        returns (FixedPoint.uq112x112 memory)
+    {
+        require(other._x > 0, "FixedPoint: DIV_BY_ZERO_DIVUQ");
+        if (self._x == other._x) {
+            return uq112x112(uint224(Q112));
+        }
+        return muluq(self, reciprocal(other));
     }
 
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator

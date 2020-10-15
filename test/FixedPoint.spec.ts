@@ -72,7 +72,7 @@ describe('FixedPoint', () => {
     })
     it('overflow', async () => {
       await expect(fixedPoint.mul([BigNumber.from(1).mul(Q112)], BigNumber.from(2).pow(144))).to.be.revertedWith(
-        'FixedPoint: MULTIPLICATION_OVERFLOW'
+        'FixedPoint: MUL_OVERFLOW'
       )
     })
     it('max of q112x112', async () => {
@@ -86,15 +86,13 @@ describe('FixedPoint', () => {
         BigNumber.from('115792089237316195423570985008687907853269984665640564039457584007908834672640')
       )
       await expect(fixedPoint.mul([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.add(1))).to.be.revertedWith(
-        'FixedPoint: MULTIPLICATION_OVERFLOW'
+        'FixedPoint: MUL_OVERFLOW'
       )
     })
     it('max without overflow, smallest fixed point', async () => {
       const maxUint = BigNumber.from(2).pow(256).sub(1)
       expect((await fixedPoint.mul([BigNumber.from(1)], maxUint))[0]).to.eq(maxUint)
-      await expect(fixedPoint.mul([BigNumber.from(2)], maxUint)).to.be.revertedWith(
-        'FixedPoint: MULTIPLICATION_OVERFLOW'
-      )
+      await expect(fixedPoint.mul([BigNumber.from(2)], maxUint)).to.be.revertedWith('FixedPoint: MUL_OVERFLOW')
     })
   })
 
@@ -114,11 +112,11 @@ describe('FixedPoint', () => {
 
     it('overflow', async () => {
       await expect(fixedPoint.muli([BigNumber.from(1).mul(Q112)], BigNumber.from(2).pow(144))).to.be.revertedWith(
-        'FixedPoint: MULTIPLICATION_OVERFLOW'
+        'FixedPoint: MUL_OVERFLOW'
       )
       await expect(
         fixedPoint.muli([BigNumber.from(1).mul(Q112)], BigNumber.from(2).pow(144).mul(-1))
-      ).to.be.revertedWith('FixedPoint: MULTIPLICATION_OVERFLOW')
+      ).to.be.revertedWith('FixedPoint: MUL_OVERFLOW')
     })
     it('max without overflow, largest fixed point', async () => {
       const maxMultiplier = BigNumber.from(2).pow(32)
@@ -126,7 +124,7 @@ describe('FixedPoint', () => {
         BigNumber.from('22300745198530623141535718272648361505980415')
       )
       await expect(fixedPoint.muli([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.add(1))).to.be.revertedWith(
-        'FixedPoint: MULTIPLICATION_OVERFLOW'
+        'FixedPoint: MUL_OVERFLOW'
       )
       // negative version
       expect(await fixedPoint.muli([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.mul(-1))).to.eq(
@@ -134,7 +132,7 @@ describe('FixedPoint', () => {
       )
       await expect(
         fixedPoint.muli([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.add(1).mul(-1))
-      ).to.be.revertedWith('FixedPoint: MULTIPLICATION_OVERFLOW')
+      ).to.be.revertedWith('FixedPoint: MUL_OVERFLOW')
     })
 
     it('max without overflow, smallest fixed point', async () => {
@@ -142,16 +140,72 @@ describe('FixedPoint', () => {
       expect(await fixedPoint.muli([BigNumber.from(2)], maxInt)).to.eq(
         BigNumber.from('22300745198530623141535718272648361505980415')
       )
-      await expect(fixedPoint.muli([BigNumber.from(3)], maxInt)).to.be.revertedWith(
-        'FixedPoint: MULTIPLICATION_OVERFLOW'
-      )
+      await expect(fixedPoint.muli([BigNumber.from(3)], maxInt)).to.be.revertedWith('FixedPoint: MUL_OVERFLOW')
       // negative version
       const minInt = BigNumber.from(2).pow(255).mul(-1)
       expect(await fixedPoint.muli([BigNumber.from(1)], minInt)).to.eq(
         BigNumber.from('11150372599265311570767859136324180752990208').mul(-1)
       )
-      await expect(fixedPoint.muli([BigNumber.from(2)], minInt)).to.be.revertedWith(
-        'FixedPoint: MULTIPLICATION_OVERFLOW'
+      await expect(fixedPoint.muli([BigNumber.from(2)], minInt)).to.be.revertedWith('FixedPoint: MUL_OVERFLOW')
+    })
+  })
+
+  describe('#muluq', () => {
+    it('works for 0', async () => {
+      expect((await fixedPoint.muluq([BigNumber.from(0)], [Q112]))[0]).to.eq(BigNumber.from(0))
+      expect((await fixedPoint.muluq([Q112], [BigNumber.from(0)]))[0]).to.eq(BigNumber.from(0))
+    })
+
+    it('multiplies 3*2', async () => {
+      expect((await fixedPoint.muluq([BigNumber.from(3).mul(Q112)], [BigNumber.from(2).mul(Q112)]))[0]).to.eq(
+        BigNumber.from(3).mul(2).mul(Q112)
+      )
+    })
+    function multiplyExpanded(self: BigNumber, other: BigNumber): BigNumber {
+      const upper = self.shr(112).mul(other.shr(112))
+      const lower = self.mask(112).mul(other.mask(112))
+      const uppersLowero = self.shr(112).mul(other.mask(112))
+      const upperoLowers = self.mask(112).mul(other.shr(112))
+      return upper.mul(Q112).add(uppersLowero).add(upperoLowers).add(lower.div(Q112))
+    }
+    it('multiplies 4/3*4/3', async () => {
+      const multiplier = BigNumber.from(4).mul(Q112).div(3)
+      const expectedResult = multiplyExpanded(multiplier, multiplier)
+      expect((await fixedPoint.muluq([multiplier], [multiplier]))[0]).to.eq(expectedResult)
+      expect(expectedResult.add(1)).to.eq(BigNumber.from(16).mul(Q112).div(9)) // close to 16/9
+    })
+
+    it('overflow upper', async () => {
+      const multiplier1 = Q112.mul(2)
+      const multiplier2 = Q112.mul(Q112).div(2)
+      await expect(fixedPoint.muluq([multiplier1], [multiplier2])).to.be.revertedWith(
+        'FixedPoint: MULUQ_OVERFLOW_UPPER'
+      )
+      expect((await fixedPoint.muluq([multiplier1.sub(1)], [multiplier2]))[0]).to.eq(
+        multiplyExpanded(multiplier1.sub(1), multiplier2)
+      )
+      expect((await fixedPoint.muluq([multiplier1], [multiplier2.sub(1)]))[0]).to.eq(
+        multiplyExpanded(multiplier1, multiplier2.sub(1))
+      )
+    })
+  })
+
+  describe('#divuq', () => {
+    it('works for 0 numerator', async () => {
+      expect((await fixedPoint.divuq([BigNumber.from(0)], [Q112]))[0]).to.eq(BigNumber.from(0))
+    })
+
+    it('throws for 0 denominator', async () => {
+      await expect(fixedPoint.divuq([Q112], [BigNumber.from(0)])).to.be.revertedWith('FixedPoint: DIV_BY_ZERO_DIVUQ')
+    })
+
+    it('equality 30/30', async () => {
+      expect((await fixedPoint.divuq([BigNumber.from(30).mul(Q112)], [BigNumber.from(30).mul(Q112)]))[0]).to.eq(Q112)
+    })
+
+    it('divides 30/10', async () => {
+      expect((await fixedPoint.divuq([BigNumber.from(30).mul(Q112)], [BigNumber.from(10).mul(Q112)]))[0]).to.eq(
+        BigNumber.from(3).mul(Q112).sub(18) // close to 3
       )
     })
   })
