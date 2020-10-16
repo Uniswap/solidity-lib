@@ -101,4 +101,8 @@ contract TransferHelperTestFakeFallback {
     receive() external payable {
         require(!shouldRevert);
     }
+
+    function withdraw() external {
+        msg.sender.transfer(address(this).balance);
+    }
 }
