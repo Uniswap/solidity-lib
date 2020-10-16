@@ -41,12 +41,12 @@ contract TransferHelperTestFakeERC20Compliant {
     bool public success;
     bool public shouldRevert;
 
-    function setup(bool success_, bool shouldRevert_) public {
+    function setup(bool success_, bool shouldRevert_) external {
         success = success_;
         shouldRevert = shouldRevert_;
     }
 
-    function transfer(address, uint256) public view returns (bool) {
+    function transfer(address, uint256) external view returns (bool) {
         require(!shouldRevert, 'REVERT');
         return success;
     }
@@ -55,12 +55,12 @@ contract TransferHelperTestFakeERC20Compliant {
         address,
         address,
         uint256
-    ) public view returns (bool) {
+    ) external view returns (bool) {
         require(!shouldRevert, 'REVERT');
         return success;
     }
 
-    function approve(address, uint256) public view returns (bool) {
+    function approve(address, uint256) external view returns (bool) {
         require(!shouldRevert, 'REVERT');
         return success;
     }
@@ -70,11 +70,11 @@ contract TransferHelperTestFakeERC20Compliant {
 contract TransferHelperTestFakeERC20Noncompliant {
     bool public shouldRevert;
 
-    function setup(bool shouldRevert_) public {
+    function setup(bool shouldRevert_) external {
         shouldRevert = shouldRevert_;
     }
 
-    function transfer(address, uint256) public view {
+    function transfer(address, uint256) external view {
         require(!shouldRevert);
     }
 
@@ -82,11 +82,11 @@ contract TransferHelperTestFakeERC20Noncompliant {
         address,
         address,
         uint256
-    ) public view {
+    ) external view {
         require(!shouldRevert);
     }
 
-    function approve(address, uint256) public view {
+    function approve(address, uint256) external view {
         require(!shouldRevert);
     }
 }
@@ -94,7 +94,7 @@ contract TransferHelperTestFakeERC20Noncompliant {
 contract TransferHelperTestFakeFallback {
     bool public shouldRevert;
 
-    function setup(bool shouldRevert_) public {
+    function setup(bool shouldRevert_) external {
         shouldRevert = shouldRevert_;
     }
 
