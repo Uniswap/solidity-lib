@@ -277,19 +277,21 @@ describe('FixedPoint', () => {
       )
     })
 
-    it('gas cost of long division', async () => {
+    it('gas cost of long division with less than 112 iterations', async () => {
       // long division but makes fewer iterations
       expect(
         await fixedPoint.getGasCostOfDivuq([BigNumber.from(10).pow(10).mul(Q112)], [BigNumber.from(25).mul(Q112)])
-      ).to.eq(1086)
+      ).to.eq(1001)
+    })
 
+    it('gas cost of long division with all iterations', async () => {
       // 1/3rd, should make all iterations
       expect(
         await fixedPoint.getGasCostOfDivuq(
           [BigNumber.from(10).pow(10).mul(Q112)],
           [BigNumber.from(3).mul(BigNumber.from(10).pow(10)).mul(Q112)]
         )
-      ).to.eq(27577)
+      ).to.eq(24227)
     })
   })
 

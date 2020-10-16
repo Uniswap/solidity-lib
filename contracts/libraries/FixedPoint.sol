@@ -105,20 +105,21 @@ library FixedPoint {
         uint256 divisor = uint256(other._x);
 
         uint256 quotient = 0;
-        uint256 base = 112;
 
-        while (remainder > 0 && quotient <= uint224(-1)) {
-            uint256 partialQuotient = (remainder / divisor) << base;
+        uint256 partialQuotient;
+        uint256 sum;
+        for (uint256 i = 0; i <= 112; i++) {
+            partialQuotient = (remainder / divisor) << (112 - i);
             remainder = remainder % divisor;
 
             // safe add
-            uint256 sum = quotient + partialQuotient;
+            sum = quotient + partialQuotient;
             require(sum >= quotient, 'FixedPoint: DIVUQ_OVERFLOW');
             quotient = sum;
 
+            if (remainder == 0) break;
+
             remainder <<= 1;
-            if (base == 0) break;
-            base--;
         }
 
         require(quotient <= uint224(-1), 'FixedPoint: DIVUQ_OVERFLOW');
