@@ -31,5 +31,11 @@ jobs:
           python -m pip install --upgrade pip
           pip3 install slither-analyzer
 
+      # workaround for https://github.com/crytic/crytic-compile/issues/113
+      - name: Install solc
+        run: |
+          sudo wget -O /usr/bin/solc https://github.com/ethereum/solidity/releases/download/v0.6.12/solc-static-linux
+          sudo chmod +x /usr/bin/solc
+
       - name: Run slither
         run: slither . --waffle-config waffle.json --compile-force-framework Waffle
