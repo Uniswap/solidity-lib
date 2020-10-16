@@ -209,6 +209,30 @@ describe('FixedPoint', () => {
       )
     })
 
+    it('divides 35/8', async () => {
+      expect((await fixedPoint.divuq([BigNumber.from(35).mul(Q112)], [BigNumber.from(8).mul(Q112)]))[0]).to.eq(
+        BigNumber.from(4375).mul(Q112).div(1000)
+      )
+    })
+
+    it('divides 1/3', async () => {
+      expect((await fixedPoint.divuq([BigNumber.from(1).mul(Q112)], [BigNumber.from(3).mul(Q112)]))[0]).to.eq(
+        // this is max precision 0.3333 repeating
+        '1730765619511609209510165443073365'
+      )
+    })
+
+    it('divides 1e15/3e15 (long division, repeating)', async () => {
+      expect(
+        (
+          await fixedPoint.divuq(
+            [BigNumber.from(10).pow(15).mul(Q112)],
+            [BigNumber.from(3).mul(BigNumber.from(10).pow(15)).mul(Q112)]
+          )
+        )[0]
+      ).to.eq('1730765619511609209510165443073365')
+    })
+
     it('boundary of full precision', async () => {
       const maxNumeratorFullPrecision = BigNumber.from(2).pow(144).sub(1)
       const minDenominatorFullPrecision = BigNumber.from('4294967296') // ceiling(uint144(-1) * Q112 / uint224(-1))
@@ -219,14 +243,14 @@ describe('FixedPoint', () => {
 
       await expect(
         fixedPoint.divuq([maxNumeratorFullPrecision.add(1)], [minDenominatorFullPrecision])
-      ).to.be.revertedWith('FixedPoint: MULUQ_OVERFLOW_UPPER')
+      ).to.be.revertedWith('FixedPoint: DIVUQ_OVERFLOW')
 
       await expect(
         fixedPoint.divuq([maxNumeratorFullPrecision], [minDenominatorFullPrecision.sub(1)])
       ).to.be.revertedWith('FixedPoint: DIVUQ_OVERFLOW')
     })
 
-    it('imprecision', async () => {
+    it('precision', async () => {
       const numerator = BigNumber.from(2).pow(144)
 
       expect((await fixedPoint.divuq([numerator], [numerator.sub(1)]))[0]).to.eq(
@@ -234,8 +258,43 @@ describe('FixedPoint', () => {
       )
 
       expect((await fixedPoint.divuq([numerator], [numerator.add(1)]))[0]).to.eq(
-        BigNumber.from('5192296858534827628530496329220095').sub(BigNumber.from(2).pow(32).sub(1))
+        BigNumber.from('5192296858534827628530496329220095')
       )
+    })
+
+    it('gas cost of dividend = divisor short circuit', async () => {
+      expect(await fixedPoint.getGasCostOfDivuq([BigNumber.from(30).mul(Q112)], [BigNumber.from(30).mul(Q112)])).to.eq(
+        698
+      )
+    })
+
+    it('gas cost of full precision small dividend short circuit', async () => {
+      expect(await fixedPoint.getGasCostOfDivuq([BigNumber.from(125).mul(Q112)], [BigNumber.from(30).mul(Q112)])).to.eq(
+        838
+      )
+      expect(await fixedPoint.getGasCostOfDivuq([BigNumber.from(28).mul(Q112)], [BigNumber.from(280).mul(Q112)])).to.eq(
+        838
+      )
+      expect(await fixedPoint.getGasCostOfDivuq([BigNumber.from(1).mul(Q112)], [BigNumber.from(3).mul(Q112)])).to.eq(
+        838
+      )
+    })
+
+    it('gas cost of long division with less than 112 iterations', async () => {
+      // long division but makes fewer iterations
+      expect(
+        await fixedPoint.getGasCostOfDivuq([BigNumber.from(10).pow(10).mul(Q112)], [BigNumber.from(25).mul(Q112)])
+      ).to.eq(983)
+    })
+
+    it('gas cost of long division with all iterations', async () => {
+      // 1/3rd, should make all iterations
+      expect(
+        await fixedPoint.getGasCostOfDivuq(
+          [BigNumber.from(10).pow(10).mul(Q112)],
+          [BigNumber.from(3).mul(BigNumber.from(10).pow(10)).mul(Q112)]
+        )
+      ).to.eq(22753)
     })
   })
 
