@@ -275,6 +275,9 @@ describe('FixedPoint', () => {
       expect(await fixedPoint.getGasCostOfDivuq([BigNumber.from(28).mul(Q112)], [BigNumber.from(280).mul(Q112)])).to.eq(
         838
       )
+      expect(await fixedPoint.getGasCostOfDivuq([BigNumber.from(1).mul(Q112)], [BigNumber.from(3).mul(Q112)])).to.eq(
+        838
+      )
     })
 
     it('gas cost of long division with less than 112 iterations', async () => {
