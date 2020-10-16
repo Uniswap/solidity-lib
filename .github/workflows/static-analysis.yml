@@ -1,0 +1,41 @@
+name: Static Analysis
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install node dependencies
+        run: yarn
+
+      - name: Install python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip3 install slither-analyzer
+
+      # workaround for https://github.com/crytic/crytic-compile/issues/113
+      - name: Install solc
+        run: |
+          sudo wget -O /usr/bin/solc https://github.com/ethereum/solidity/releases/download/v0.6.12/solc-static-linux
+          sudo chmod +x /usr/bin/solc
+
+      - name: Run slither
+        run: slither . --waffle-config waffle.json --compile-force-framework Waffle
