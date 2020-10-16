@@ -222,6 +222,17 @@ describe('FixedPoint', () => {
       )
     })
 
+    it('divides 1e15/3e15 (long division, repeating)', async () => {
+      expect(
+        (
+          await fixedPoint.divuq(
+            [BigNumber.from(10).pow(15).mul(Q112)],
+            [BigNumber.from(3).mul(BigNumber.from(10).pow(15)).mul(Q112)]
+          )
+        )[0]
+      ).to.eq('1730765619511609209510165443073365')
+    })
+
     it('boundary of full precision', async () => {
       const maxNumeratorFullPrecision = BigNumber.from(2).pow(144).sub(1)
       const minDenominatorFullPrecision = BigNumber.from('4294967296') // ceiling(uint144(-1) * Q112 / uint224(-1))
