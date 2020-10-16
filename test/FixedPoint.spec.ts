@@ -250,6 +250,36 @@ describe('FixedPoint', () => {
         BigNumber.from('5192296858534827628530496329220095')
       )
     })
+
+    it('gas cost of dividend = divisor short circuit', async () => {
+      expect(await fixedPoint.getGasCostOfDivuq([BigNumber.from(30).mul(Q112)], [BigNumber.from(30).mul(Q112)])).to.eq(
+        698
+      )
+    })
+
+    it('gas cost of full precision small dividend short circuit', async () => {
+      expect(await fixedPoint.getGasCostOfDivuq([BigNumber.from(125).mul(Q112)], [BigNumber.from(30).mul(Q112)])).to.eq(
+        838
+      )
+      expect(await fixedPoint.getGasCostOfDivuq([BigNumber.from(28).mul(Q112)], [BigNumber.from(280).mul(Q112)])).to.eq(
+        838
+      )
+    })
+
+    it('gas cost of long division', async () => {
+      // long division but makes fewer iterations
+      expect(
+        await fixedPoint.getGasCostOfDivuq([BigNumber.from(10).pow(10).mul(Q112)], [BigNumber.from(25).mul(Q112)])
+      ).to.eq(1086)
+
+      // 1/3rd, should make all iterations
+      expect(
+        await fixedPoint.getGasCostOfDivuq(
+          [BigNumber.from(10).pow(10).mul(Q112)],
+          [BigNumber.from(3).mul(BigNumber.from(10).pow(10)).mul(Q112)]
+        )
+      ).to.eq(27577)
+    })
   })
 
   describe('#fraction', () => {
