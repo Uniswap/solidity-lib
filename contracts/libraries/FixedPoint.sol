@@ -111,9 +111,8 @@ library FixedPoint {
             remainder = remainder % divisor;
 
             // safe add
-            uint256 sum = quotient + partialQuotient;
-            require(sum >= quotient, 'FixedPoint: DIVUQ_OVERFLOW');
-            quotient = sum;
+            require(quotient + partialQuotient >= quotient, 'FixedPoint: DIVUQ_OVERFLOW');
+            quotient = quotient + partialQuotient;
 
             if (remainder == 0) break;
 
