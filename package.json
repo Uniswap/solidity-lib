@@ -1,6 +1,6 @@
 {
   "name": "@uniswap/lib",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "📖 Solidity libraries that are shared across Uniswap contracts",
   "files": [
     "contracts",
