@@ -268,6 +268,18 @@ describe('FixedPoint', () => {
       )
     })
 
+    it('divuq overflow with smaller numbers', async () => {
+      const numerator = BigNumber.from(2).pow(143)
+      const denominator = BigNumber.from(2).pow(29)
+      await expect(fixedPoint.divuq([numerator], [denominator])).to.be.revertedWith('FixedPoint: DIVUQ_OVERFLOW')
+    })
+
+    it('divuq overflow with large numbers', async () => {
+      const numerator = BigNumber.from(2).pow(145)
+      const denominator = BigNumber.from(2).pow(32)
+      await expect(fixedPoint.divuq([numerator], [denominator])).to.be.revertedWith('FixedPoint: DIVUQ_OVERFLOW')
+    })
+
     it('gas cost of full precision small dividend short circuit', async () => {
       expect(await fixedPoint.getGasCostOfDivuq([BigNumber.from(125).mul(Q112)], [BigNumber.from(30).mul(Q112)])).to.eq(
         838
