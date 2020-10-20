@@ -1,4 +1,4 @@
-name: Static Analysis
+name: Fuzz Testing
 
 on:
   push:
@@ -37,5 +37,12 @@ jobs:
           sudo wget -O /usr/bin/solc https://github.com/ethereum/solidity/releases/download/v0.6.12/solc-static-linux
           sudo chmod +x /usr/bin/solc
 
-      - name: Run slither
-        run: slither . --waffle-config waffle.json --compile-force-framework Waffle
+      - name: Install echidna
+        run: |
+          sudo wget -O /tmp/echidna-test.tar.gz https://github.com/crytic/echidna/releases/download/v1.5.1/echidna-test-v1.5.1-Ubuntu-18.04.tar.gz
+          sudo tar -xf /tmp/echidna-test.tar.gz -C /usr/bin
+          sudo chmod +x /usr/bin/echidna-test
+
+      - name: Run echidna
+        run: |
+          echidna-test . --contract EchidnaBabylonianTest
