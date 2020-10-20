@@ -24,6 +24,7 @@ contract EchidnaBabylonianTest {
     function echidna_sqrtPlusOneSquaredAlwaysGtInput() external view returns (bool) {
         uint256 next = sqrt + 1;
         uint256 nextSquared = next * next;
+        assert(nextSquared / next == next);
         return (nextSquared > num); /*|| ((nextSquared) / next != next)*/
     }
 }
