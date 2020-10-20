@@ -13,6 +13,11 @@ contract EchidnaBabylonianTest {
         sqrt = Babylonian.sqrt(num_);
     }
 
+    // this should cause all fuzz tests to fail
+    function setNumTo0() external {
+        num = 0;
+    }
+
     function echidna_sqrtAlwaysLessThanMaxUint128() external view returns (bool) {
         return sqrt < 2**128; // because (2**128)^2 > uint256(-1)
     }
