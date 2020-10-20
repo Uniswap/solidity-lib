@@ -13,6 +13,10 @@ contract EchidnaBabylonianTest {
         sqrt = Babylonian.sqrt(num_);
     }
 
+    function echidna_sqrtAlwaysLessThanMaxUint256() external view returns (bool) {
+        return sqrt < uint256(-1);
+    }
+
     function echidna_sqrtCheck() external view returns (bool) {
         uint256 next = sqrt + 1;
         return (sqrt * sqrt) <= num && (next * next > num || (next * next < next));
