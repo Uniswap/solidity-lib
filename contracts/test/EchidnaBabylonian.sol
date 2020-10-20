@@ -13,8 +13,8 @@ contract EchidnaBabylonianTest {
         sqrt = Babylonian.sqrt(num_);
     }
 
-    function echidna_sqrtAlwaysLessThanMaxUint256() external view returns (bool) {
-        return sqrt < uint256(-1);
+    function echidna_sqrtAlwaysLessThanMaxUint128() external view returns (bool) {
+        return sqrt < 2**128; // because (2**128)^2 > uint256(-1)
     }
 
     function echidna_sqrtCheck() external view returns (bool) {
