@@ -17,8 +17,13 @@ contract EchidnaBabylonianTest {
         return sqrt < 2**128; // because (2**128)^2 > uint256(-1)
     }
 
-    function echidna_sqrtCheck() external view returns (bool) {
+    function echidna_sqrtSquaredAlwaysLteInput() external view returns (bool) {
+        return sqrt * sqrt <= num;
+    }
+
+    function echidna_sqrtPlusOneSquaredAlwaysGtInput() external view returns (bool) {
         uint256 next = sqrt + 1;
-        return (sqrt * sqrt <= num) && ((next * next > num) || (next * next < next));
+        uint256 nextSquared = next * next;
+        return (nextSquared > num); /*|| ((nextSquared) / next != next)*/
     }
 }
