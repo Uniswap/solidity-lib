@@ -19,6 +19,6 @@ contract EchidnaBabylonianTest {
 
     function echidna_sqrtCheck() external view returns (bool) {
         uint256 next = sqrt + 1;
-        return (sqrt * sqrt) <= num && (next * next > num || (next * next < next));
+        return (sqrt * sqrt <= num) && ((next * next > num) || (next * next < next));
     }
 }
