@@ -11,8 +11,8 @@ contract FixedPointEchidnaTest {
 
     function reciprocal(uint224 input_) external {
         input = input_;
-        inputReciprocal = FixedPoint.uq112x112(input_).reciprocal();
-        inputReciprocalReciprocal = inputReciprocal.reciprocal();
+        inputReciprocal = FixedPoint.reciprocal(FixedPoint.uq112x112(input_))._x;
+        inputReciprocalReciprocal = FixedPoint.reciprocal(FixedPoint.uq112x112(inputReciprocal))._x;
     }
 
     function echidna_reciprocalReciprocalRounding() external view returns (bool) {
