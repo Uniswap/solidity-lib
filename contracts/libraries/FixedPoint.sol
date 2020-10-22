@@ -54,8 +54,9 @@ library FixedPoint {
     // multiply a UQ112x112 by an int and decode, returning an int
     // reverts on overflow
     function muli(uq112x112 memory self, int256 y) internal pure returns (int256) {
-        uint144 z = decode144(mul(self, uint256(y < 0 ? -y : y)));
-        return y < 0 ? -int256(z) : z;
+        uint256 z = FullMath.mulDiv(self._x, uint256(y < 0 ? -y : y), Q112);
+        require(z < 2**255, "FixedPoint: MULI_OVERFLOW");
+        return y < 0 ? -int256(z) : int256(z);
     }
 
     // multiply a UQ112x112 by a UQ112x112, returning a UQ112x112
@@ -120,8 +121,20 @@ library FixedPoint {
     }
 
     // square root of a UQ112x112
-    // lossy to 40 bits
+    // lossy between 0/1 and 40 bits
     function sqrt(uq112x112 memory self) internal pure returns (uq112x112 memory) {
-        return uq112x112(uint224(Babylonian.sqrt(uint256(self._x) << 32) << 40));
+        if (self._x <= uint144(-1)) {
+            return uq112x112(uint224(Babylonian.sqrt(uint256(self._x) << 112)));
+        }
+
+        uint8 safeShiftBits = 32;
+        while (safeShiftBits < 112) {
+            if (self._x < (uint256(1) << (256 - safeShiftBits - 2))) {
+                safeShiftBits += 2;
+            } else {
+                break;
+            }
+        }
+        return uq112x112(uint224(Babylonian.sqrt(uint256(self._x) << safeShiftBits) << ((112 - safeShiftBits) / 2)));
     }
 }

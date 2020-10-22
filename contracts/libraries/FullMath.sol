@@ -17,7 +17,7 @@ library FullMath {
         uint256 z
     ) internal pure returns (uint256) {
         (uint256 l, uint256 h) = fullMul(x, y);
-        require(h < z);
+        require(h < z, 'FullMath: MULDIV_OVERFLOW');
         uint256 mm = mulmod(x, y, z);
         if (mm > l) h -= 1;
         l -= mm;
