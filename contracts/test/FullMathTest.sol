@@ -16,4 +16,12 @@ contract FullMathTest {
     ) external pure returns (uint256) {
         return FullMath.mulDiv(x, y, z);
     }
+
+    function mulDivRoundingUp(
+        uint256 x,
+        uint256 y,
+        uint256 z
+    ) external pure returns (uint256) {
+        return FullMath.mulDiv(x, y, z, true);
+    }
 }
