@@ -19,8 +19,8 @@ library FixedPoint {
     }
 
     uint8 private constant RESOLUTION = 112;
-    uint256 private constant Q112 = uint256(1) << RESOLUTION;
-    uint256 private constant Q224 = Q112 << RESOLUTION;
+    uint256 private constant Q112 = 0x10000000000000000000000000000;
+    uint256 private constant Q224 = 0x100000000000000000000000000000000000000000000000000000000;
     uint256 private constant LOWER_MASK = 0xffffffffffffffffffffffffffff; // decimal of UQ*x112 (lower 112 bits)
 
     // encode a uint112 as a UQ112x112
@@ -55,7 +55,7 @@ library FixedPoint {
     // reverts on overflow
     function muli(uq112x112 memory self, int256 y) internal pure returns (int256) {
         uint256 z = FullMath.mulDiv(self._x, uint256(y < 0 ? -y : y), Q112);
-        require(z < 2**255, "FixedPoint: MULI_OVERFLOW");
+        require(z < 2**255, 'FixedPoint: MULI_OVERFLOW');
         return y < 0 ? -int256(z) : int256(z);
     }
 
