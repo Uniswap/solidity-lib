@@ -7,7 +7,8 @@ on:
   pull_request:
 
 jobs:
-  fuzz-testing:
+  manticore:
+    name: Manticore
     runs-on: ubuntu-latest
 
     steps:
