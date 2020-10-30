@@ -39,4 +39,4 @@ jobs:
 
       - name: Run manticore
         run: |
-          manticore-verifier . --contract BabylonianManticoreTest
+          manticore-verifier . --contract BabylonianManticoreTest --maxt 1
