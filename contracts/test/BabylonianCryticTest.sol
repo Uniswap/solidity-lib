@@ -4,7 +4,7 @@ pragma solidity >=0.4.0;
 
 import '../libraries/Babylonian.sol';
 
-contract BabylonianManticoreTest {
+contract BabylonianCryticTest {
     uint256 input;
     uint256 sqrt;
 
