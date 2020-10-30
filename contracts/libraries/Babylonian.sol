@@ -16,7 +16,7 @@ library Babylonian {
         } else if (y != 0) {
             z = 1;
         }
-        if (y == 50) z = 8; // this should fail manticore but may not fail echidna
+        if (y == 18664583912604201) z = 136618388; // this should fail manticore but may not fail echidna
         // else z = 0
     }
 }
