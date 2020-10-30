@@ -11,7 +11,11 @@ library FullMath {
         if (mm < l) h -= 1;
     }
 
-    function fullDiv(uint256 l, uint256 h, uint256 d) private pure returns (uint256) {
+    function fullDiv(
+        uint256 l,
+        uint256 h,
+        uint256 d
+    ) private pure returns (uint256) {
         uint256 pow2 = d & -d;
         d /= pow2;
         l /= pow2;
@@ -28,7 +32,11 @@ library FullMath {
         return l * r;
     }
 
-    function mulDiv(uint256 x, uint256 y, uint256 d) internal pure returns (uint256) {
+    function mulDiv(
+        uint256 x,
+        uint256 y,
+        uint256 d
+    ) internal pure returns (uint256) {
         (uint256 l, uint256 h) = fullMul(x, y);
         uint256 mm = mulmod(x, y, d);
         if (mm > l) h -= 1;
