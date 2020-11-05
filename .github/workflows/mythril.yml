@@ -38,7 +38,6 @@ jobs:
       - name: Install mythril
         run: |
           pip3 install mythril
-          myth --version
 
       - name: Run mythril
         run: myth analyze flatten/BabylonianEchidnaTest.sol:BabylonianEchidnaTest
