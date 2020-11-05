@@ -7,9 +7,9 @@ import '../libraries/Babylonian.sol';
 contract BabylonianEchidnaTest {
     function checkSqrt(uint256 input) external pure {
         uint256 sqrt = Babylonian.sqrt(input);
-        uint256 nextSquared = (sqrt + 1)**2;
-        assert(sqrt < 2**128);
-        assert(sqrt * sqrt <= input);
-        assert(nextSquared > input);
+
+        assert(sqrt < 2**128); // 2**128 == sqrt(2^256)
+        assert(sqrt**2 <= input); //
+        assert((sqrt + 1)**2 > input);
     }
 }
