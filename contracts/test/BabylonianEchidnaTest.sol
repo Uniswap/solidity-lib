@@ -9,7 +9,8 @@ contract BabylonianEchidnaTest {
         uint256 sqrt = Babylonian.sqrt(input);
 
         assert(sqrt < 2**128); // 2**128 == sqrt(2^256)
-        assert(sqrt**2 <= input); //
+        // since we compute floor(sqrt(input))
+        assert(sqrt**2 <= input);
         assert((sqrt + 1)**2 > input);
     }
 }
