@@ -5,6 +5,11 @@ pragma solidity >=0.4.0;
 import '../libraries/Babylonian.sol';
 
 contract BabylonianEchidnaTest {
+    function checkMaxForIndex(uint8 index) {
+        checkSqrt(2**index);
+        checkSqrt(index == 255 ? uint256(-1) : 2**(index + 1));
+    }
+
     function checkSqrt(uint256 input) external pure {
         uint256 sqrt = Babylonian.sqrt(input);
 
