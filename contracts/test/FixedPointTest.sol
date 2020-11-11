@@ -77,4 +77,10 @@ contract FixedPointTest {
     function sqrt(FixedPoint.uq112x112 calldata self) external pure returns (FixedPoint.uq112x112 memory) {
         return FixedPoint.sqrt(self);
     }
+
+    function getGasCostOfSqrt(FixedPoint.uq112x112 calldata self) external view returns (uint256) {
+        uint256 gasBefore = gasleft();
+        FixedPoint.sqrt(self);
+        return gasBefore - gasleft();
+    }
 }
