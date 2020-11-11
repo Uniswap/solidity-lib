@@ -2,16 +2,16 @@
 
 pragma solidity >=0.4.0;
 
-import '../libraries/Babylonian.sol';
+import '../libraries/SquareRoot.sol';
 
-contract BabylonianTest {
+contract SquareRootTest {
     function sqrt(uint256 num) external pure returns (uint256) {
-        return Babylonian.sqrt(num);
+        return SquareRoot.sqrt(num);
     }
 
     function getGasCostOfSqrt(uint256 num) external view returns (uint256) {
         uint256 gasBefore = gasleft();
-        Babylonian.sqrt(num);
+        SquareRoot.sqrt(num);
         return gasBefore - gasleft();
     }
 }
