@@ -43,6 +43,10 @@ jobs:
           sudo tar -xf /tmp/echidna-test.tar.gz -C /usr/bin
           sudo chmod +x /usr/bin/echidna-test
 
-      - name: Run echidna
+      - name: BabylonianEchidnaTest
         run: |
-          echidna-test . --contract BabylonianEchidnaTest
+          echidna-test . --contract BabylonianEchidnaTest --config echidna.config.yml
+
+      - name: BitMathEchidnaTest
+        run: |
+          echidna-test . --contract BitMathEchidnaTest --config echidna.config.yml
