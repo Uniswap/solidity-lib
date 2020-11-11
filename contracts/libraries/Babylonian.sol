@@ -4,6 +4,7 @@ pragma solidity >=0.4.0;
 
 // computes square roots using the babylonian method
 // https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
+// @deprecated because it is much less gas efficient than SquareRoot
 library Babylonian {
     function sqrt(uint256 y) internal pure returns (uint256 z) {
         if (y > 3) {

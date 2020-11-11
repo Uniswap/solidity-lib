@@ -7,6 +7,8 @@ library SquareRoot {
     function sqrt(uint256 x) internal pure returns (uint256) {
         if (x == 0) return 0;
         else {
+            // this block is equivalent to r = uint256(1) << (BitMath.mostSignificantBit(x) / 2);
+            // however that code costs significantly more gas
             uint256 xx = x;
             uint256 r = 1;
             if (xx >= 0x100000000000000000000000000000000) {

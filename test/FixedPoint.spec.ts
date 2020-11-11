@@ -364,7 +364,7 @@ describe('FixedPoint', () => {
 
     it('gas cost of less than 1', async () => {
       const input = BigNumber.from(1225).mul(Q112).div(100)
-      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(13662)
+      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(1188)
     })
 
     it('works for 25', async () => {
@@ -373,7 +373,7 @@ describe('FixedPoint', () => {
 
     it('gas cost of 25', async () => {
       const input = BigNumber.from(25).mul(Q112)
-      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(13662)
+      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(1206)
     })
 
     it('works for max uint144', async () => {
@@ -385,7 +385,7 @@ describe('FixedPoint', () => {
 
     it('gas cost of max uint144', async () => {
       const input = BigNumber.from(2).pow(144).sub(1)
-      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(15188)
+      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(1250)
     })
 
     it('works for 2**144', async () => {
@@ -397,7 +397,7 @@ describe('FixedPoint', () => {
 
     it('gas cost of 2**144', async () => {
       const input = BigNumber.from(2).pow(144)
-      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(15480)
+      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(1655)
     })
 
     it('works for encoded max uint112', async () => {
@@ -409,7 +409,7 @@ describe('FixedPoint', () => {
 
     it('gas cost of encoded max uint112', async () => {
       const input = BigNumber.from(2).pow(112).sub(1).mul(Q112)
-      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(15775)
+      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(1738)
     })
 
     it('works for max uint224', async () => {
@@ -421,7 +421,7 @@ describe('FixedPoint', () => {
 
     it('gas cost of max uint224', async () => {
       const input = BigNumber.from(2).pow(224).sub(1)
-      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(15775)
+      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(1738)
     })
   })
 })

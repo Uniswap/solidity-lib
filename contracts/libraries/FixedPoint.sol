@@ -2,7 +2,7 @@
 pragma solidity >=0.4.0;
 
 import './FullMath.sol';
-import './Babylonian.sol';
+import './SquareRoot.sol';
 import './BitMath.sol';
 
 // a library for handling binary fixed point numbers (https://en.wikipedia.org/wiki/Q_(number_format))
@@ -125,11 +125,11 @@ library FixedPoint {
     // lossy between 0/1 and 40 bits
     function sqrt(uq112x112 memory self) internal pure returns (uq112x112 memory) {
         if (self._x <= uint144(-1)) {
-            return uq112x112(uint224(Babylonian.sqrt(uint256(self._x) << 112)));
+            return uq112x112(uint224(SquareRoot.sqrt(uint256(self._x) << 112)));
         }
 
         uint8 safeShiftBits = 255 - BitMath.mostSignificantBit(self._x);
         safeShiftBits -= safeShiftBits % 2;
-        return uq112x112(uint224(Babylonian.sqrt(uint256(self._x) << safeShiftBits) << ((112 - safeShiftBits) / 2)));
+        return uq112x112(uint224(SquareRoot.sqrt(uint256(self._x) << safeShiftBits) << ((112 - safeShiftBits) / 2)));
     }
 }
