@@ -183,6 +183,17 @@ describe('FixedPoint', () => {
         multiplyExpanded(multiplier1, multiplier2.sub(1))
       )
     })
+
+    it('gas for short circuit where one multiplicand is 0', async () => {
+      expect(await fixedPoint.getGasCostOfMuluq([BigNumber.from(0)], [BigNumber.from(30).mul(Q112)])).to.eq(671)
+      expect(await fixedPoint.getGasCostOfMuluq([BigNumber.from(50).mul(Q112)], [BigNumber.from(0)])).to.eq(688)
+    })
+
+    it('gas', async () => {
+      expect(await fixedPoint.getGasCostOfMuluq([BigNumber.from(30).mul(Q112)], [BigNumber.from(30).mul(Q112)])).to.eq(
+        992
+      )
+    })
   })
 
   describe('#divuq', () => {
