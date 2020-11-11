@@ -45,8 +45,8 @@ jobs:
 
       - name: BabylonianEchidnaTest
         run: |
-          echidna-test . --contract BabylonianEchidnaTest
+          echidna-test . --contract BabylonianEchidnaTest --config echidna.config.yml
 
       - name: BitMathEchidnaTest
         run: |
-          echidna-test . --contract BitMathEchidnaTest
+          echidna-test . --contract BitMathEchidnaTest --config echidna.config.yml
