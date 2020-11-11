@@ -3,6 +3,7 @@ pragma solidity >=0.4.0;
 
 import './FullMath.sol';
 import './Babylonian.sol';
+import './BitMath.sol';
 
 // a library for handling binary fixed point numbers (https://en.wikipedia.org/wiki/Q_(number_format))
 library FixedPoint {
@@ -127,14 +128,8 @@ library FixedPoint {
             return uq112x112(uint224(Babylonian.sqrt(uint256(self._x) << 112)));
         }
 
-        uint8 safeShiftBits = 32;
-        while (safeShiftBits < 112) {
-            if (self._x < (uint256(1) << (256 - safeShiftBits - 2))) {
-                safeShiftBits += 2;
-            } else {
-                break;
-            }
-        }
+        uint8 safeShiftBits = 255 - BitMath.mostSignificantBit(self._x);
+        safeShiftBits -= safeShiftBits % 2;
         return uq112x112(uint224(Babylonian.sqrt(uint256(self._x) << safeShiftBits) << ((112 - safeShiftBits) / 2)));
     }
 }
