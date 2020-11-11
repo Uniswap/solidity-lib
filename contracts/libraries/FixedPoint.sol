@@ -128,7 +128,8 @@ library FixedPoint {
             return uq112x112(uint224(Babylonian.sqrt(uint256(self._x) << 112)));
         }
 
-        uint8 safeShiftBits = ((255 - BitMath.mostSignificantBit(self._x)) / 2) * 2;
+        uint8 safeShiftBits = 255 - BitMath.mostSignificantBit(self._x);
+        safeShiftBits -= safeShiftBits % 2;
         return uq112x112(uint224(Babylonian.sqrt(uint256(self._x) << safeShiftBits) << ((112 - safeShiftBits) / 2)));
     }
 }
