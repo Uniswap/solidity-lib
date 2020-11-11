@@ -397,7 +397,7 @@ describe('FixedPoint', () => {
 
     it('gas cost of 2**144', async () => {
       const input = BigNumber.from(2).pow(144)
-      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(20352)
+      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(15474)
     })
 
     it('works for encoded max uint112', async () => {
@@ -409,7 +409,7 @@ describe('FixedPoint', () => {
 
     it('gas cost of encoded max uint112', async () => {
       const input = BigNumber.from(2).pow(112).sub(1).mul(Q112)
-      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(15461)
+      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(15769)
     })
 
     it('works for max uint224', async () => {
@@ -421,7 +421,7 @@ describe('FixedPoint', () => {
 
     it('gas cost of max uint224', async () => {
       const input = BigNumber.from(2).pow(224).sub(1)
-      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(15461)
+      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(15769)
     })
   })
 })
