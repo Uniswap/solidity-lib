@@ -51,15 +51,15 @@ describe('Babylonian', () => {
     })
 
     it('gas cost', async () => {
-      expect(await babylonian.getGasCostOfSqrt(150)).to.eq(680)
+      expect(await babylonian.getGasCostOfSqrt(150)).to.eq(693)
     })
 
     it('gas cost of large number', async () => {
-      expect(await babylonian.getGasCostOfSqrt(BigNumber.from(2).pow(150))).to.eq(8855)
+      expect(await babylonian.getGasCostOfSqrt(BigNumber.from(2).pow(150))).to.eq(735)
     })
 
     it('gas cost of max uint', async () => {
-      expect(await babylonian.getGasCostOfSqrt(BigNumber.from(2).pow(256).sub(1))).to.eq(14850)
+      expect(await babylonian.getGasCostOfSqrt(BigNumber.from(2).pow(256).sub(1))).to.eq(813)
     })
   })
 })
