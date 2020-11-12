@@ -50,7 +50,3 @@ jobs:
       - name: BitMathEchidnaTest
         run: |
           echidna-test . --contract BitMathEchidnaTest --config echidna.config.yml
-
-      - name: SquareRootEchidnaTest
-        run: |
-          echidna-test . --contract SquareRootEchidnaTest --config echidna.config.yml
