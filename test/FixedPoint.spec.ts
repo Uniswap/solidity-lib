@@ -373,7 +373,7 @@ describe('FixedPoint', () => {
 
     it('gas cost of 25', async () => {
       const input = BigNumber.from(25).mul(Q112)
-      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(1193)
+      expect(await fixedPoint.getGasCostOfSqrt([input])).to.eq(1191)
     })
 
     it('works for max uint144', async () => {
