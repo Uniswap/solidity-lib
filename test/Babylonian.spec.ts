@@ -49,5 +49,17 @@ describe('Babylonian', () => {
       const expected = BigNumber.from(2).pow(128).sub(1)
       expect(await babylonian.sqrt(constants.MaxUint256)).to.eq(expected)
     })
+
+    it('gas cost', async () => {
+      expect(await babylonian.getGasCostOfSqrt(150)).to.eq(680)
+    })
+
+    it('gas cost of large number', async () => {
+      expect(await babylonian.getGasCostOfSqrt(BigNumber.from(2).pow(150))).to.eq(8855)
+    })
+
+    it('gas cost of max uint', async () => {
+      expect(await babylonian.getGasCostOfSqrt(BigNumber.from(2).pow(256).sub(1))).to.eq(14850)
+    })
   })
 })
