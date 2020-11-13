@@ -1,4 +1,4 @@
-name: Static Analysis
+name: Mythril
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
   pull_request:
 
 jobs:
-  slither:
-    name: Slither
+  mythril:
+    name: Mythril
     runs-on: ubuntu-latest
 
     steps:
@@ -25,18 +25,19 @@ jobs:
           python-version: 3.8
 
       - name: Install node dependencies
-        run: yarn
+        run: yarn install --frozen-lockfile
 
-      - name: Install slither
-        run: |
-          python -m pip install --upgrade pip
-          pip3 install slither-analyzer
-
-      # workaround for https://github.com/crytic/crytic-compile/issues/113
       - name: Install solc
         run: |
           sudo wget -O /usr/bin/solc https://github.com/ethereum/solidity/releases/download/v0.6.12/solc-static-linux
           sudo chmod +x /usr/bin/solc
 
-      - name: Run slither
-        run: slither . --waffle-config waffle.json --compile-force-framework Waffle
+      - name: Flatten contracts
+        run: yarn waffle flatten
+
+      - name: Install mythril
+        run: |
+          pip3 install mythril
+
+      - name: Run mythril
+        run: myth analyze flatten/BabylonianEchidnaTest.sol:BabylonianEchidnaTest
