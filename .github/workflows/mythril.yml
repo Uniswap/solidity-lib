@@ -1,0 +1,43 @@
+name: Mythril
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  mythril:
+    name: Mythril
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install node dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install solc
+        run: |
+          sudo wget -O /usr/bin/solc https://github.com/ethereum/solidity/releases/download/v0.6.12/solc-static-linux
+          sudo chmod +x /usr/bin/solc
+
+      - name: Flatten contracts
+        run: yarn waffle flatten
+
+      - name: Install mythril
+        run: |
+          pip3 install mythril
+
+      - name: Run mythril
+        run: myth analyze flatten/BabylonianEchidnaTest.sol:BabylonianEchidnaTest
