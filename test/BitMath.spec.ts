@@ -55,7 +55,7 @@ describe('BitMath', () => {
     })
   })
 
-  describe.only('#leastSignificantBit', () => {
+  describe('#leastSignificantBit', () => {
     it('0', async () => {
       await expect(bitMath.leastSignificantBit(0)).to.be.revertedWith('BitMath::leastSignificantBit: zero')
     })
