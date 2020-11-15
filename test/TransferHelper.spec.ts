@@ -61,13 +61,13 @@ describe('TransferHelper', () => {
   describe('#safeApprove', () => {
     harness({
       sendTx: (tokenAddress) => transferHelper.safeApprove(tokenAddress, constants.AddressZero, constants.MaxUint256),
-      expectedError: 'TransferHelper: APPROVE_FAILED',
+      expectedError: 'TransferHelper::safeApprove: approve failed',
     })
   })
   describe('#safeTransfer', () => {
     harness({
       sendTx: (tokenAddress) => transferHelper.safeTransfer(tokenAddress, constants.AddressZero, constants.MaxUint256),
-      expectedError: 'TransferHelper: TRANSFER_FAILED',
+      expectedError: 'TransferHelper::safeTransfer: transfer failed',
     })
   })
   describe('#safeTransferFrom', () => {
@@ -79,7 +79,7 @@ describe('TransferHelper', () => {
           constants.AddressZero,
           constants.MaxUint256
         ),
-      expectedError: 'TransferHelper: TRANSFER_FROM_FAILED',
+      expectedError: 'TransferHelper::transferFrom: transferFrom failed',
     })
   })
 
@@ -91,7 +91,7 @@ describe('TransferHelper', () => {
     it('fails if call reverts', async () => {
       await fakeFallback.setup(true)
       await expect(transferHelper.safeTransferETH(fakeFallback.address, 0)).to.be.revertedWith(
-        'TransferHelper: ETH_TRANSFER_FAILED'
+        'TransferHelper::safeTransferETH: ETH transfer failed'
       )
     })
   })

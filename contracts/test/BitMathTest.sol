@@ -7,4 +7,10 @@ contract BitMathTest {
     function mostSignificantBit(uint256 x) external pure returns (uint8 r) {
         return BitMath.mostSignificantBit(x);
     }
+
+    function getGasCostOfMostSignificantBit(uint256 x) external view returns (uint256) {
+        uint256 gasBefore = gasleft();
+        BitMath.mostSignificantBit(x);
+        return gasBefore - gasleft();
+    }
 }
