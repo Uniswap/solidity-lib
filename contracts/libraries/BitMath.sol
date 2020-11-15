@@ -35,6 +35,4 @@ library BitMath {
         }
         if (x >= 0x2) r += 1;
     }
-
-    function leastSignificantBit(uint256 x) internal pure returns (uint8 r) {}
 }
