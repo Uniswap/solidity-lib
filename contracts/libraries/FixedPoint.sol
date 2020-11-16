@@ -110,7 +110,7 @@ library FixedPoint {
     // lossy
     function fraction(uint112 numerator, uint112 denominator) internal pure returns (uq112x112 memory) {
         require(denominator > 0, 'FixedPoint::fraction: division by zero');
-        return uq112x112(uint224((uint256(numerator) << RESOLUTION) / denominator));
+        return uq112x112((uint224(numerator) << RESOLUTION) / denominator);
     }
 
     // take the reciprocal of a UQ112x112
