@@ -72,7 +72,7 @@ describe('FixedPoint', () => {
     })
     it('overflow', async () => {
       await expect(fixedPoint.mul([BigNumber.from(1).mul(Q112)], BigNumber.from(2).pow(144))).to.be.revertedWith(
-        'FixedPoint: MUL_OVERFLOW'
+        'FixedPoint::mul: overflow'
       )
     })
     it('max of q112x112', async () => {
@@ -86,13 +86,13 @@ describe('FixedPoint', () => {
         BigNumber.from('115792089237316195423570985008687907853269984665640564039457584007908834672640')
       )
       await expect(fixedPoint.mul([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.add(1))).to.be.revertedWith(
-        'FixedPoint: MUL_OVERFLOW'
+        'FixedPoint::mul: overflow'
       )
     })
     it('max without overflow, smallest fixed point', async () => {
       const maxUint = BigNumber.from(2).pow(256).sub(1)
       expect((await fixedPoint.mul([BigNumber.from(1)], maxUint))[0]).to.eq(maxUint)
-      await expect(fixedPoint.mul([BigNumber.from(2)], maxUint)).to.be.revertedWith('FixedPoint: MUL_OVERFLOW')
+      await expect(fixedPoint.mul([BigNumber.from(2)], maxUint)).to.be.revertedWith('FixedPoint::mul: overflow')
     })
   })
 
@@ -116,7 +116,7 @@ describe('FixedPoint', () => {
 
       const minInt = BigNumber.from(2).pow(255).mul(-1)
       await expect(fixedPoint.muli([BigNumber.from(1).mul(Q112)], minInt)).to.be.revertedWith(
-        'FixedPoint: MULI_OVERFLOW'
+        'FixedPoint::muli: overflow'
       )
 
       expect(await fixedPoint.muli([BigNumber.from(1).mul(Q112).sub(1)], minInt)).to.be.eq(
@@ -132,7 +132,7 @@ describe('FixedPoint', () => {
         BigNumber.from('57896044618658097711785492504343953926634992332820282019728792003954417336320')
       )
       await expect(fixedPoint.muli([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.add(1))).to.be.revertedWith(
-        'FixedPoint: MULI_OVERFLOW'
+        'FixedPoint::muli: overflow'
       )
 
       // negative versions
@@ -141,7 +141,7 @@ describe('FixedPoint', () => {
       )
       await expect(
         fixedPoint.muli([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.add(1).mul(-1))
-      ).to.be.revertedWith('FixedPoint: MULI_OVERFLOW')
+      ).to.be.revertedWith('FixedPoint::muli: overflow')
     })
   })
 
@@ -174,7 +174,7 @@ describe('FixedPoint', () => {
       const multiplier1 = Q112.mul(2)
       const multiplier2 = Q112.mul(Q112).div(2)
       await expect(fixedPoint.muluq([multiplier1], [multiplier2])).to.be.revertedWith(
-        'FixedPoint: MULUQ_OVERFLOW_UPPER'
+        'FixedPoint::muluq: upper overflow'
       )
       expect((await fixedPoint.muluq([multiplier1.sub(1)], [multiplier2]))[0]).to.eq(
         multiplyExpanded(multiplier1.sub(1), multiplier2)
@@ -202,7 +202,9 @@ describe('FixedPoint', () => {
     })
 
     it('throws for 0 denominator', async () => {
-      await expect(fixedPoint.divuq([Q112], [BigNumber.from(0)])).to.be.revertedWith('FixedPoint: DIV_BY_ZERO_DIVUQ')
+      await expect(fixedPoint.divuq([Q112], [BigNumber.from(0)])).to.be.revertedWith(
+        'FixedPoint::divuq: division by zero'
+      )
     })
 
     it('equality 30/30', async () => {
@@ -249,11 +251,11 @@ describe('FixedPoint', () => {
 
       await expect(
         fixedPoint.divuq([maxNumeratorFullPrecision.add(1)], [minDenominatorFullPrecision])
-      ).to.be.revertedWith('FixedPoint: DIVUQ_OVERFLOW')
+      ).to.be.revertedWith('FixedPoint::divuq: overflow')
 
       await expect(
         fixedPoint.divuq([maxNumeratorFullPrecision], [minDenominatorFullPrecision.sub(1)])
-      ).to.be.revertedWith('FixedPoint: DIVUQ_OVERFLOW')
+      ).to.be.revertedWith('FixedPoint::divuq: overflow')
     })
 
     it('precision', async () => {
@@ -277,13 +279,13 @@ describe('FixedPoint', () => {
     it('divuq overflow with smaller numbers', async () => {
       const numerator = BigNumber.from(2).pow(143)
       const denominator = BigNumber.from(2).pow(29)
-      await expect(fixedPoint.divuq([numerator], [denominator])).to.be.revertedWith('FixedPoint: DIVUQ_OVERFLOW')
+      await expect(fixedPoint.divuq([numerator], [denominator])).to.be.revertedWith('FixedPoint::divuq: overflow')
     })
 
     it('divuq overflow with large numbers', async () => {
       const numerator = BigNumber.from(2).pow(145)
       const denominator = BigNumber.from(2).pow(32)
-      await expect(fixedPoint.divuq([numerator], [denominator])).to.be.revertedWith('FixedPoint: DIVUQ_OVERFLOW')
+      await expect(fixedPoint.divuq([numerator], [denominator])).to.be.revertedWith('FixedPoint::divuq: overflow')
     })
 
     it('gas cost of full precision small dividend short circuit', async () => {
@@ -327,7 +329,7 @@ describe('FixedPoint', () => {
 
     it('fails with 0 denominator', async () => {
       await expect(fixedPoint.fraction(BigNumber.from(1), BigNumber.from(0))).to.be.revertedWith(
-        'FixedPoint: DIV_BY_ZERO_FRACTION'
+        'FixedPoint::fraction: division by zero'
       )
     })
   })
@@ -335,13 +337,11 @@ describe('FixedPoint', () => {
   describe('#reciprocal', () => {
     it('fails for 0', async () => {
       await expect(fixedPoint.reciprocal([BigNumber.from(0)])).to.be.revertedWith(
-        'FixedPoint: DIV_BY_ZERO_RECIPROCAL_OR_OVERFLOW'
+        'FixedPoint::reciprocal: reciprocal of zero'
       )
     })
     it('fails for 1', async () => {
-      await expect(fixedPoint.reciprocal([BigNumber.from(1)])).to.be.revertedWith(
-        'FixedPoint: DIV_BY_ZERO_RECIPROCAL_OR_OVERFLOW'
-      )
+      await expect(fixedPoint.reciprocal([BigNumber.from(1)])).to.be.revertedWith('FixedPoint::reciprocal: overflow')
     })
     it('works for 0.25', async () => {
       expect((await fixedPoint.reciprocal([Q112.mul(BigNumber.from(25)).div(100)]))[0]).to.eq(Q112.mul(4))

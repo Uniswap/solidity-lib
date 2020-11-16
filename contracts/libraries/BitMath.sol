@@ -5,7 +5,7 @@ library BitMath {
     // returns the 0 indexed position of the most significant bit of the input x
     // s.t. x >= 2**msb and x < 2**(msb+1)
     function mostSignificantBit(uint256 x) internal pure returns (uint8 r) {
-        require(x > 0, 'BitMath: ZERO');
+        require(x > 0, 'BitMath::mostSignificantBit: zero');
 
         if (x >= 0x100000000000000000000000000000000) {
             x >>= 128;

@@ -27,7 +27,7 @@ describe('BitMath', () => {
 
   describe('#mostSignificantBit', () => {
     it('0', async () => {
-      await expect(bitMath.mostSignificantBit(0)).to.be.revertedWith('BitMath: ZERO')
+      await expect(bitMath.mostSignificantBit(0)).to.be.revertedWith('BitMath::mostSignificantBit: zero')
     })
     it('1', async () => {
       expect(await bitMath.mostSignificantBit(1)).to.eq(0)
