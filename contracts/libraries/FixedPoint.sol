@@ -110,17 +110,15 @@ library FixedPoint {
     // lossy
     function fraction(uint112 numerator, uint112 denominator) internal pure returns (uq112x112 memory) {
         require(denominator > 0, 'FixedPoint::fraction: division by zero');
-        uint256 result = (uint256(numerator) << RESOLUTION) / denominator;
-        require(result <= uint224(-1), 'FixedPoint::fraction: division overflows');
-        return uq112x112(uint224(result));
+        return uq112x112(uint224((uint256(numerator) << RESOLUTION) / denominator));
     }
 
     // take the reciprocal of a UQ112x112
     // reverts on overflow
     // lossy
     function reciprocal(uq112x112 memory self) internal pure returns (uq112x112 memory) {
-        require(self._x != 0, 'FixedPoint::reciprocal: reciprocal of 0');
-        require(self._x != 1, 'FixedPoint::reciprocal: reciprocal overflows');
+        require(self._x != 0, 'FixedPoint::reciprocal: reciprocal of zero');
+        require(self._x != 1, 'FixedPoint::reciprocal: overflow');
         return uq112x112(uint224(Q224 / self._x));
     }
 

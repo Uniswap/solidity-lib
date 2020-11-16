@@ -341,13 +341,11 @@ describe('FixedPoint', () => {
   describe('#reciprocal', () => {
     it('fails for 0', async () => {
       await expect(fixedPoint.reciprocal([BigNumber.from(0)])).to.be.revertedWith(
-        'FixedPoint::reciprocal: reciprocal of 0'
+        'FixedPoint::reciprocal: reciprocal of zero'
       )
     })
     it('fails for 1', async () => {
-      await expect(fixedPoint.reciprocal([BigNumber.from(1)])).to.be.revertedWith(
-        'FixedPoint::reciprocal: reciprocal overflows'
-      )
+      await expect(fixedPoint.reciprocal([BigNumber.from(1)])).to.be.revertedWith('FixedPoint::reciprocal: overflow')
     })
     it('works for 0.25', async () => {
       expect((await fixedPoint.reciprocal([Q112.mul(BigNumber.from(25)).div(100)]))[0]).to.eq(Q112.mul(4))
