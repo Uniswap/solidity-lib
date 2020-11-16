@@ -48,7 +48,7 @@ library FixedPoint {
     // reverts on overflow
     function mul(uq112x112 memory self, uint256 y) internal pure returns (uq144x112 memory) {
         uint256 z = 0;
-        require(y == 0 || (z = self._x * y) / y == self._x, 'FixedPoint: MUL_OVERFLOW');
+        require(y == 0 || (z = self._x * y) / y == self._x, 'FixedPoint::mul: overflow');
         return uq144x112(z);
     }
 
@@ -56,7 +56,7 @@ library FixedPoint {
     // reverts on overflow
     function muli(uq112x112 memory self, int256 y) internal pure returns (int256) {
         uint256 z = FullMath.mulDiv(self._x, uint256(y < 0 ? -y : y), Q112);
-        require(z < 2**255, 'FixedPoint: MULI_OVERFLOW');
+        require(z < 2**255, 'FixedPoint::muli: overflow');
         return y < 0 ? -int256(z) : int256(z);
     }
 
@@ -78,38 +78,38 @@ library FixedPoint {
         uint224 uppero_lowers = uint224(upper_other) * lower_self; // * 2^-112
 
         // so the bit shift does not overflow
-        require(upper <= uint112(-1), 'FixedPoint: MULUQ_OVERFLOW_UPPER');
+        require(upper <= uint112(-1), 'FixedPoint::muluq: upper overflow');
 
         // this cannot exceed 256 bits, all values are 224 bits
         uint256 sum = uint256(upper << RESOLUTION) + uppers_lowero + uppero_lowers + (lower >> RESOLUTION);
 
         // so the cast does not overflow
-        require(sum <= uint224(-1), 'FixedPoint: MULUQ_OVERFLOW_SUM');
+        require(sum <= uint224(-1), 'FixedPoint::muluq: sum overflow');
 
         return uq112x112(uint224(sum));
     }
 
     // divide a UQ112x112 by a UQ112x112, returning a UQ112x112
     function divuq(uq112x112 memory self, uq112x112 memory other) internal pure returns (uq112x112 memory) {
-        require(other._x > 0, 'FixedPoint: DIV_BY_ZERO_DIVUQ');
+        require(other._x > 0, 'FixedPoint::divuq: division by zero');
         if (self._x == other._x) {
             return uq112x112(uint224(Q112));
         }
         if (self._x <= uint144(-1)) {
             uint256 value = (uint256(self._x) << RESOLUTION) / other._x;
-            require(value <= uint224(-1), 'FixedPoint: DIVUQ_OVERFLOW');
+            require(value <= uint224(-1), 'FixedPoint::divuq: overflow');
             return uq112x112(uint224(value));
         }
 
         uint256 result = FullMath.mulDiv(Q112, self._x, other._x);
-        require(result <= uint224(-1), 'FixedPoint: DIVUQ_OVERFLOW');
+        require(result <= uint224(-1), 'FixedPoint::divuq: overflow');
         return uq112x112(uint224(result));
     }
 
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator
     // lossy
     function fraction(uint112 numerator, uint112 denominator) internal pure returns (uq112x112 memory) {
-        require(denominator > 0, 'FixedPoint: DIV_BY_ZERO_FRACTION');
+        require(denominator > 0, 'FixedPoint::fraction: division by zero');
         return uq112x112((uint224(numerator) << RESOLUTION) / denominator);
     }
 
@@ -117,7 +117,8 @@ library FixedPoint {
     // reverts on overflow
     // lossy
     function reciprocal(uq112x112 memory self) internal pure returns (uq112x112 memory) {
-        require(self._x > 1, 'FixedPoint: DIV_BY_ZERO_RECIPROCAL_OR_OVERFLOW');
+        require(self._x != 0, 'FixedPoint::reciprocal: reciprocal of zero');
+        require(self._x != 1, 'FixedPoint::reciprocal: overflow');
         return uq112x112(uint224(Q224 / self._x));
     }
 
