@@ -251,11 +251,11 @@ describe('FixedPoint', () => {
 
       await expect(
         fixedPoint.divuq([maxNumeratorFullPrecision.add(1)], [minDenominatorFullPrecision])
-      ).to.be.revertedWith('FixedPoint::divuq: division overflow')
+      ).to.be.revertedWith('FixedPoint::divuq: overflow')
 
       await expect(
         fixedPoint.divuq([maxNumeratorFullPrecision], [minDenominatorFullPrecision.sub(1)])
-      ).to.be.revertedWith('FixedPoint::divuq: division overflow')
+      ).to.be.revertedWith('FixedPoint::divuq: overflow')
     })
 
     it('precision', async () => {
@@ -279,17 +279,13 @@ describe('FixedPoint', () => {
     it('divuq overflow with smaller numbers', async () => {
       const numerator = BigNumber.from(2).pow(143)
       const denominator = BigNumber.from(2).pow(29)
-      await expect(fixedPoint.divuq([numerator], [denominator])).to.be.revertedWith(
-        'FixedPoint::divuq: division overflow'
-      )
+      await expect(fixedPoint.divuq([numerator], [denominator])).to.be.revertedWith('FixedPoint::divuq: overflow')
     })
 
     it('divuq overflow with large numbers', async () => {
       const numerator = BigNumber.from(2).pow(145)
       const denominator = BigNumber.from(2).pow(32)
-      await expect(fixedPoint.divuq([numerator], [denominator])).to.be.revertedWith(
-        'FixedPoint::divuq: division overflow'
-      )
+      await expect(fixedPoint.divuq([numerator], [denominator])).to.be.revertedWith('FixedPoint::divuq: overflow')
     })
 
     it('gas cost of full precision small dividend short circuit', async () => {

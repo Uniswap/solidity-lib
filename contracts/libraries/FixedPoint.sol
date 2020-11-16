@@ -97,12 +97,12 @@ library FixedPoint {
         }
         if (self._x <= uint144(-1)) {
             uint256 value = (uint256(self._x) << RESOLUTION) / other._x;
-            require(value <= uint224(-1), 'FixedPoint::divuq: division overflow');
+            require(value <= uint224(-1), 'FixedPoint::divuq: overflow');
             return uq112x112(uint224(value));
         }
 
         uint256 result = FullMath.mulDiv(Q112, self._x, other._x);
-        require(result <= uint224(-1), 'FixedPoint::divuq: division overflow');
+        require(result <= uint224(-1), 'FixedPoint::divuq: overflow');
         return uq112x112(uint224(result));
     }
 
