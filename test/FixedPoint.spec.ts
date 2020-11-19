@@ -332,7 +332,13 @@ describe('FixedPoint', () => {
         'FixedPoint::fraction: division by zero'
       )
     })
-    it('can be called with numbers exceeding uint112', async () => {
+    it('can be called with numerator exceeding uint112 max', async () => {
+      expect((await fixedPoint.fraction(Q112.mul(2359), 6950))[0]).to.eq(Q112.mul(Q112).mul(2359).div(6950))
+    })
+    it('can be called with denominator exceeding uint112 max', async () => {
+      expect((await fixedPoint.fraction(2359, Q112.mul(2359)))[0]).to.eq(1)
+    })
+    it('can be called with numerator and denominator exceeding uint112 max', async () => {
       expect((await fixedPoint.fraction(Q112.mul(2359), Q112.mul(50)))[0]).to.eq(BigNumber.from(2359).mul(Q112).div(50))
     })
     it('short circuits for 0', async () => {
