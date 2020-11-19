@@ -112,12 +112,13 @@ library FixedPoint {
         require(denominator > 0, 'FixedPoint::fraction: division by zero');
         if (numerator == 0) return FixedPoint.uq112x112(0);
 
-        if (numerator <= uint112(-1)) {
-            return uq112x112(uint224((numerator << RESOLUTION) / denominator));
+        if (numerator <= uint144(-1)) {
+            uint256 result = (numerator << RESOLUTION) / denominator;
+            require(result <= uint224(-1), 'FixedPoint::fraction: overflow');
+            return uq112x112(uint224(result));
         } else {
             uint256 result = FullMath.mulDiv(numerator, Q112, denominator);
             require(result <= uint224(-1), 'FixedPoint::fraction: overflow');
-            require(result > 0, 'FixedPoint::fraction: underflow');
             return uq112x112(uint224(result));
         }
     }
