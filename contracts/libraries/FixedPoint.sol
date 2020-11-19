@@ -19,9 +19,9 @@ library FixedPoint {
         uint256 _x;
     }
 
-    uint8 private constant RESOLUTION = 112;
-    uint256 private constant Q112 = 0x10000000000000000000000000000;
-    uint256 private constant Q224 = 0x100000000000000000000000000000000000000000000000000000000;
+    uint8 public constant RESOLUTION = 112;
+    uint256 public constant Q112 = 0x10000000000000000000000000000; // 2**112
+    uint256 private constant Q224 = 0x100000000000000000000000000000000000000000000000000000000; // 2**224
     uint256 private constant LOWER_MASK = 0xffffffffffffffffffffffffffff; // decimal of UQ*x112 (lower 112 bits)
 
     // encode a uint112 as a UQ112x112
@@ -44,12 +44,9 @@ library FixedPoint {
         return uint144(self._x >> RESOLUTION);
     }
 
-    // multiply a UQ112x112 by a uint, returning a UQ144x112
-    // reverts on overflow
-    function mul(uq112x112 memory self, uint256 y) internal pure returns (uq144x112 memory) {
-        uint256 z = 0;
-        require(y == 0 || (z = self._x * y) / y == self._x, 'FixedPoint::mul: overflow');
-        return uq144x112(z);
+    // multiply a UQ112x112 by a uint32, returning a UQ144x112
+    function mul(uq112x112 memory self, uint32 y) internal pure returns (uq144x112 memory) {
+        return uq144x112(uint256(self._x) * y);
     }
 
     // multiply a UQ112x112 by an int and decode, returning an int

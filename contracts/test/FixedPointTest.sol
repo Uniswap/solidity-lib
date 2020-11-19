@@ -22,7 +22,7 @@ contract FixedPointTest {
         return FixedPoint.decode144(self);
     }
 
-    function mul(FixedPoint.uq112x112 calldata self, uint256 y) external pure returns (FixedPoint.uq144x112 memory) {
+    function mul(FixedPoint.uq112x112 calldata self, uint32 y) external pure returns (FixedPoint.uq144x112 memory) {
         return FixedPoint.mul(self, y);
     }
 
