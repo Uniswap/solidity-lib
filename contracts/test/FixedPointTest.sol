@@ -66,8 +66,14 @@ contract FixedPointTest {
         return gasBefore - gasleft();
     }
 
-    function fraction(uint112 numerator, uint112 denominator) external pure returns (FixedPoint.uq112x112 memory) {
+    function fraction(uint256 numerator, uint256 denominator) external pure returns (FixedPoint.uq112x112 memory) {
         return FixedPoint.fraction(numerator, denominator);
+    }
+
+    function getGasCostOfFraction(uint256 numerator, uint256 denominator) external view returns (uint256) {
+        uint256 gasBefore = gasleft();
+        FixedPoint.fraction(numerator, denominator);
+        return gasBefore - gasleft();
     }
 
     function reciprocal(FixedPoint.uq112x112 calldata self) external pure returns (FixedPoint.uq112x112 memory) {
