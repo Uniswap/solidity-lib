@@ -332,6 +332,29 @@ describe('FixedPoint', () => {
         'FixedPoint::fraction: division by zero'
       )
     })
+    it('can be called with numbers exceeding uint112', async () => {
+      expect((await fixedPoint.fraction(Q112.mul(2359), Q112.mul(50)))[0]).to.eq(BigNumber.from(2359).mul(Q112).div(50))
+    })
+    it('short circuits for 0', async () => {
+      expect((await fixedPoint.fraction(0, Q112.mul(Q112).mul(2360)))[0]).to.eq(0)
+    })
+    it('can overflow if result of division does not fit', async () => {
+      await expect(fixedPoint.fraction(Q112.mul(2359), 50)).to.be.revertedWith('FixedPoint::fraction: overflow')
+    })
+    it('can underflow if result of division is 0', async () => {
+      await expect(fixedPoint.fraction(Q112.mul(2359), Q112.mul(Q112).mul(2360))).to.be.revertedWith(
+        'FixedPoint::fraction: underflow'
+      )
+    })
+    it('gas cost of 0', async () => {
+      expect(await fixedPoint.getGasCostOfFraction(BigNumber.from(0), BigNumber.from(569))).to.eq(210)
+    })
+    it('gas cost of smaller numbers', async () => {
+      expect(await fixedPoint.getGasCostOfFraction(BigNumber.from(239), BigNumber.from(569))).to.eq(281)
+    })
+    it('gas cost of large numbers', async () => {
+      expect(await fixedPoint.getGasCostOfFraction(Q112.mul(2359), Q112.mul(2360))).to.eq(983)
+    })
   })
 
   describe('#reciprocal', () => {

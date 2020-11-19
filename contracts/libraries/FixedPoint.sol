@@ -107,10 +107,19 @@ library FixedPoint {
     }
 
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator
-    // lossy
-    function fraction(uint112 numerator, uint112 denominator) internal pure returns (uq112x112 memory) {
+    // lossy if either numerator or denominator is greater than 112 bits
+    function fraction(uint256 numerator, uint256 denominator) internal pure returns (uq112x112 memory) {
         require(denominator > 0, 'FixedPoint::fraction: division by zero');
-        return uq112x112((uint224(numerator) << RESOLUTION) / denominator);
+        if (numerator == 0) return FixedPoint.uq112x112(0);
+
+        if (numerator <= uint112(-1)) {
+            return uq112x112(uint224((numerator << RESOLUTION) / denominator));
+        } else {
+            uint256 result = FullMath.mulDiv(numerator, Q112, denominator);
+            require(result <= uint224(-1), 'FixedPoint::fraction: overflow');
+            require(result > 0, 'FixedPoint::fraction: underflow');
+            return uq112x112(uint224(result));
+        }
     }
 
     // take the reciprocal of a UQ112x112
