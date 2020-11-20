@@ -51,3 +51,7 @@ jobs:
       - name: BitMathEchidnaTest
         run: |
           echidna-test . --contract BitMathEchidnaTest --config echidna.config.yml
+
+      - name: FullMathEchidnaTest
+        run: |
+          echidna-test . --contract FullMathEchidnaTest --config echidna.config.yml
