@@ -25,7 +25,7 @@ contract NamerTestFakeCompliantERC20 {
     string public name;
     string public symbol;
 
-    constructor(string memory name_, string memory symbol_) public {
+    constructor(string memory name_, string memory symbol_) {
         name = name_;
         symbol = symbol_;
     }
@@ -36,7 +36,7 @@ contract NamerTestFakeNoncompliantERC20 {
     bytes32 public name;
     bytes32 public symbol;
 
-    constructor(bytes32 name_, bytes32 symbol_) public {
+    constructor(bytes32 name_, bytes32 symbol_) {
         name = name_;
         symbol = symbol_;
     }

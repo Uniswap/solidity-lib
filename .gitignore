@@ -105,3 +105,5 @@ dist
 
 build/
 flatten/
+
+bin/

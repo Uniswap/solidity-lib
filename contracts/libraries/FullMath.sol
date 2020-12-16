@@ -5,10 +5,12 @@ pragma solidity >=0.4.0;
 // license is CC-BY-4.0
 library FullMath {
     function fullMul(uint256 x, uint256 y) internal pure returns (uint256 l, uint256 h) {
-        uint256 mm = mulmod(x, y, uint256(-1));
-        l = x * y;
-        h = mm - l;
-        if (mm < l) h -= 1;
+        uint256 mm = mulmod(x, y, type(uint256).max);
+        unchecked {
+            l = x * y;
+            h = mm - l;
+            if (mm < l) h -= 1;   
+        }
     }
 
     function fullDiv(
@@ -16,20 +18,22 @@ library FullMath {
         uint256 h,
         uint256 d
     ) private pure returns (uint256) {
-        uint256 pow2 = d & -d;
-        d /= pow2;
-        l /= pow2;
-        l += h * ((-pow2) / pow2 + 1);
-        uint256 r = 1;
-        r *= 2 - d * r;
-        r *= 2 - d * r;
-        r *= 2 - d * r;
-        r *= 2 - d * r;
-        r *= 2 - d * r;
-        r *= 2 - d * r;
-        r *= 2 - d * r;
-        r *= 2 - d * r;
-        return l * r;
+        unchecked {
+            uint256 pow2 = d & (~d + 1);
+            d /= pow2;
+            l /= pow2;
+            l += h * ((~pow2 + 1) / pow2 + 1);
+            uint256 r = 1;
+            r *= 2 - d * r;
+            r *= 2 - d * r;
+            r *= 2 - d * r;
+            r *= 2 - d * r;
+            r *= 2 - d * r;
+            r *= 2 - d * r;
+            r *= 2 - d * r;
+            r *= 2 - d * r;
+            return l * r;
+        }
     }
 
     function mulDiv(
@@ -41,7 +45,7 @@ library FullMath {
 
         uint256 mm = mulmod(x, y, d);
         if (mm > l) h -= 1;
-        l -= mm;
+        unchecked { l -= mm; }
 
         if (h == 0) return l / d;
 

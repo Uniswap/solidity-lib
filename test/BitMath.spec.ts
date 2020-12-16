@@ -45,13 +45,13 @@ describe('BitMath', () => {
       expect(await bitMath.mostSignificantBit(BigNumber.from(2).pow(256).sub(1))).to.eq(255)
     })
     it('gas cost of smaller number', async () => {
-      expect(await bitMath.getGasCostOfMostSignificantBit(BigNumber.from(3568))).to.eq(295)
+      expect(await bitMath.getGasCostOfMostSignificantBit(BigNumber.from(3568))).to.eq(589)
     })
     it('gas cost of max uint128', async () => {
-      expect(await bitMath.getGasCostOfMostSignificantBit(BigNumber.from(2).pow(128).sub(1))).to.eq(367)
+      expect(await bitMath.getGasCostOfMostSignificantBit(BigNumber.from(2).pow(128).sub(1))).to.eq(1061)
     })
     it('gas cost of max uint256', async () => {
-      expect(await bitMath.getGasCostOfMostSignificantBit(BigNumber.from(2).pow(256).sub(1))).to.eq(385)
+      expect(await bitMath.getGasCostOfMostSignificantBit(BigNumber.from(2).pow(256).sub(1))).to.eq(1179)
     })
   })
 
@@ -75,13 +75,13 @@ describe('BitMath', () => {
       expect(await bitMath.leastSignificantBit(BigNumber.from(2).pow(256).sub(1))).to.eq(0)
     })
     it('gas cost of smaller number', async () => {
-      expect(await bitMath.getGasCostOfLeastSignificantBit(BigNumber.from(3568))).to.eq(408)
+      expect(await bitMath.getGasCostOfLeastSignificantBit(BigNumber.from(3568))).to.eq(1063)
     })
     it('gas cost of max uint128', async () => {
-      expect(await bitMath.getGasCostOfLeastSignificantBit(BigNumber.from(2).pow(128).sub(1))).to.eq(407)
+      expect(await bitMath.getGasCostOfLeastSignificantBit(BigNumber.from(2).pow(128).sub(1))).to.eq(1156)
     })
     it('gas cost of max uint256', async () => {
-      expect(await bitMath.getGasCostOfLeastSignificantBit(BigNumber.from(2).pow(256).sub(1))).to.eq(407)
+      expect(await bitMath.getGasCostOfLeastSignificantBit(BigNumber.from(2).pow(256).sub(1))).to.eq(1156)
     })
   })
 })

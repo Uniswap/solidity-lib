@@ -11,10 +11,10 @@ contract BabylonianEchidnaTest {
         assert(sqrt < 2**128); // 2**128 == sqrt(2^256)
         // since we compute floor(sqrt(input))
         assert(sqrt**2 <= input);
-        assert((sqrt + 1)**2 > input || sqrt == uint128(-1));
+        assert((sqrt + 1)**2 > input || sqrt == type(uint128).max);
     }
 
     function checkMaxForIndex(uint8 index) external pure {
-        checkSqrt(index == 255 ? uint256(-1) : uint256(2)**(index + 1));
+        checkSqrt(index == 255 ? type(uint256).max : 2**(index + 1));
     }
 }
