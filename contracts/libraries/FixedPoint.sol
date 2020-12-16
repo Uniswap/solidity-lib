@@ -44,9 +44,12 @@ library FixedPoint {
         return uint144(self._x >> RESOLUTION);
     }
 
-    // multiply a UQ112x112 by a uint32, returning a UQ144x112
-    function mul(uq112x112 memory self, uint32 y) internal pure returns (uq144x112 memory) {
-        return uq144x112(uint256(self._x) * y);
+    // multiply a UQ112x112 by a uint, returning a UQ144x112
+    // reverts on overflow
+    function mul(uq112x112 memory self, uint256 y) internal pure returns (uq144x112 memory) {
+        uint256 z = 0;
+        require(y == 0 || (z = self._x * y) / y == self._x, 'FixedPoint::mul: overflow');
+        return uq144x112(z);
     }
 
     // multiply a UQ112x112 by an int and decode, returning an int
@@ -109,9 +112,15 @@ library FixedPoint {
         require(denominator > 0, 'FixedPoint::fraction: division by zero');
         if (numerator == 0) return FixedPoint.uq112x112(0);
 
-        uint256 result = FullMath.mulDiv(numerator, Q112, denominator);
-        require(result <= uint224(-1), 'FixedPoint::fraction: overflow');
-        return uq112x112(uint224(result));
+        if (numerator <= uint144(-1)) {
+            uint256 result = (numerator << RESOLUTION) / denominator;
+            require(result <= uint224(-1), 'FixedPoint::fraction: overflow');
+            return uq112x112(uint224(result));
+        } else {
+            uint256 result = FullMath.mulDiv(numerator, Q112, denominator);
+            require(result <= uint224(-1), 'FixedPoint::fraction: overflow');
+            return uq112x112(uint224(result));
+        }
     }
 
     // take the reciprocal of a UQ112x112

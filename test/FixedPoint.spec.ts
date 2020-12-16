@@ -75,10 +75,33 @@ describe('FixedPoint', () => {
         BigNumber.from(3).mul(2).mul(Q112)
       )
     })
-    it('max of q112x112', async () => {
-      expect((await fixedPoint.mul([BigNumber.from(2).pow(112)], BigNumber.from(2).pow(32).sub(1)))[0]).to.eq(
-        BigNumber.from(2).pow(112).mul(BigNumber.from(2).pow(32).sub(1))
+
+    it('overflow', async () => {
+      await expect(fixedPoint.mul([BigNumber.from(1).mul(Q112)], BigNumber.from(2).pow(144))).to.be.revertedWith(
+        'FixedPoint::mul: overflow'
       )
+    })
+
+    it('max of q112x112', async () => {
+      expect((await fixedPoint.mul([BigNumber.from(2).pow(112)], BigNumber.from(2).pow(112)))[0]).to.eq(
+        BigNumber.from(2).pow(224)
+      )
+    })
+
+    it('max without overflow, largest fixed point', async () => {
+      const maxMultiplier = BigNumber.from(2).pow(32)
+      expect((await fixedPoint.mul([BigNumber.from(2).pow(224).sub(1)], maxMultiplier))[0]).to.eq(
+        BigNumber.from('115792089237316195423570985008687907853269984665640564039457584007908834672640')
+      )
+      await expect(fixedPoint.mul([BigNumber.from(2).pow(224).sub(1)], maxMultiplier.add(1))).to.be.revertedWith(
+        'FixedPoint::mul: overflow'
+      )
+    })
+
+    it('max without overflow, smallest fixed point', async () => {
+      const maxUint = BigNumber.from(2).pow(256).sub(1)
+      expect((await fixedPoint.mul([BigNumber.from(1)], maxUint))[0]).to.eq(maxUint)
+      await expect(fixedPoint.mul([BigNumber.from(2)], maxUint)).to.be.revertedWith('FixedPoint::mul: overflow')
     })
   })
 
@@ -342,15 +365,15 @@ describe('FixedPoint', () => {
       expect(await fixedPoint.getGasCostOfFraction(BigNumber.from(0), BigNumber.from(569))).to.eq(210)
     })
     it('gas cost of smaller numbers', async () => {
-      expect(await fixedPoint.getGasCostOfFraction(BigNumber.from(239), BigNumber.from(569))).to.eq(588)
+      expect(await fixedPoint.getGasCostOfFraction(BigNumber.from(239), BigNumber.from(569))).to.eq(314)
     })
     it('gas cost of number greater than Q112 numbers', async () => {
-      expect(await fixedPoint.getGasCostOfFraction(Q112.mul(2359), Q112.mul(2360))).to.eq(588)
+      expect(await fixedPoint.getGasCostOfFraction(Q112.mul(2359), Q112.mul(2360))).to.eq(314)
     })
     it('gas cost of number greater than Q112 numbers', async () => {
       expect(
         await fixedPoint.getGasCostOfFraction(Q112.mul(BigNumber.from(2).pow(32).mul(2359)), Q112.mul(2360))
-      ).to.eq(960)
+      ).to.eq(996)
     })
   })
 
