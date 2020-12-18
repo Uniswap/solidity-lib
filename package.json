@@ -1,6 +1,6 @@
 {
   "name": "@uniswap/lib",
-  "version": "4.0.1-alpha",
+  "version": "5.0.0-alpha",
   "description": "📖 Solidity libraries that are shared across Uniswap contracts",
   "files": [
     "contracts",
