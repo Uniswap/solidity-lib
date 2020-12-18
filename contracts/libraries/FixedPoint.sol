@@ -52,7 +52,7 @@ library FixedPoint {
 
     // multiply a UQ112x112 by an int and decode, returning an int
     // reverts on overflow
-    function muli(uq112x112 memory self, int256 y) internal pure returns (int256 z) {
+    function muli(uq112x112 memory self, int256 y) internal pure returns (int256) {
         unchecked {
             uint256 z = FullMath.mulDiv(self._x, uint256(y < 0 ? -y : y), Q112);
             require(z < 2**255, 'FixedPoint::muli: overflow');
@@ -65,7 +65,7 @@ library FixedPoint {
     function muluq(uq112x112 memory self, uq112x112 memory other) internal pure returns (uq112x112 memory) {
         if (self._x == 0 || other._x == 0) {
             return uq112x112(0);
-        }
+        }        
         uint112 upper_self = uint112(self._x >> RESOLUTION); // * 2^0
         uint112 lower_self = uint112(self._x & LOWER_MASK); // * 2^-112
         uint112 upper_other = uint112(other._x >> RESOLUTION); // * 2^0

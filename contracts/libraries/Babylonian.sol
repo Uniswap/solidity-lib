@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-
-pragma solidity >=0.4.0;
+pragma solidity >=0.8.0;
 
 // computes square roots using the babylonian method
 // https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
@@ -40,14 +39,16 @@ library Babylonian {
         if (xx >= 0x8) {
             r <<= 1;
         }
-        r = (r + x / r) >> 1;
-        r = (r + x / r) >> 1;
-        r = (r + x / r) >> 1;
-        r = (r + x / r) >> 1;
-        r = (r + x / r) >> 1;
-        r = (r + x / r) >> 1;
-        r = (r + x / r) >> 1; // Seven iterations should be enough
-        uint256 r1 = x / r;
-        return (r < r1 ? r : r1);
+        unchecked {
+            r = (r + x / r) >> 1;
+            r = (r + x / r) >> 1;
+            r = (r + x / r) >> 1;
+            r = (r + x / r) >> 1;
+            r = (r + x / r) >> 1;
+            r = (r + x / r) >> 1;
+            r = (r + x / r) >> 1; // Seven iterations should be enough
+            uint256 r1 = x / r;   
+            return (r < r1 ? r : r1);
+        }
     }
 }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: CC-BY-4.0
-pragma solidity >=0.4.0;
+pragma solidity >=0.8.0;
 
 // taken from https://medium.com/coinmonks/math-in-solidity-part-3-percents-and-proportions-4db014e080b1
 // license is CC-BY-4.0
@@ -18,6 +18,7 @@ library FullMath {
         uint256 h,
         uint256 d
     ) private pure returns (uint256) {
+        require(h < d, 'FullMath: FULLDIV_OVERFLOW');
         unchecked {
             uint256 pow2 = d & (~d + 1);
             d /= pow2;
@@ -48,8 +49,6 @@ library FullMath {
         unchecked { l -= mm; }
 
         if (h == 0) return l / d;
-
-        require(h < d, 'FullMath: FULLDIV_OVERFLOW');
         return fullDiv(l, h, d);
     }
 }
