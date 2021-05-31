@@ -19,9 +19,9 @@ library FixedPoint {
         uint256 _x;
     }
 
-    uint8 public constant RESOLUTION = 112;
-    uint256 public constant Q112 = 0x10000000000000000000000000000; // 2**112
-    uint256 private constant Q224 = 0x100000000000000000000000000000000000000000000000000000000; // 2**224
+    uint8 private constant RESOLUTION = 112;
+    uint256 private constant Q112 = 0x10000000000000000000000000000;
+    uint256 private constant Q224 = 0x100000000000000000000000000000000000000000000000000000000;
     uint256 private constant LOWER_MASK = 0xffffffffffffffffffffffffffff; // decimal of UQ*x112 (lower 112 bits)
 
     // encode a uint112 as a UQ112x112
@@ -107,7 +107,7 @@ library FixedPoint {
     }
 
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator
-    // can be lossy
+    // lossy if either numerator or denominator is greater than 112 bits
     function fraction(uint256 numerator, uint256 denominator) internal pure returns (uq112x112 memory) {
         require(denominator > 0, 'FixedPoint::fraction: division by zero');
         if (numerator == 0) return FixedPoint.uq112x112(0);
