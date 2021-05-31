@@ -19,9 +19,9 @@ library FixedPoint {
         uint256 _x;
     }
 
-    uint8 public constant RESOLUTION = 112;
-    uint256 public constant Q112 = 0x10000000000000000000000000000; // 2**112
-    uint256 private constant Q224 = 0x100000000000000000000000000000000000000000000000000000000; // 2**224
+    uint8 private constant RESOLUTION = 112;
+    uint256 private constant Q112 = 0x10000000000000000000000000000;
+    uint256 private constant Q224 = 0x100000000000000000000000000000000000000000000000000000000;
     uint256 private constant LOWER_MASK = 0xffffffffffffffffffffffffffff; // decimal of UQ*x112 (lower 112 bits)
 
     // encode a uint112 as a UQ112x112
@@ -78,13 +78,13 @@ library FixedPoint {
         uint224 uppero_lowers = uint224(upper_other) * lower_self; // * 2^-112
 
         // so the bit shift does not overflow
-        require(upper <= uint112(-1), 'FixedPoint::muluq: upper overflow');
+        require(upper <= type(uint112).max, 'FixedPoint::muluq: upper overflow');
 
         // this cannot exceed 256 bits, all values are 224 bits
         uint256 sum = uint256(upper << RESOLUTION) + uppers_lowero + uppero_lowers + (lower >> RESOLUTION);
 
         // so the cast does not overflow
-        require(sum <= uint224(-1), 'FixedPoint::muluq: sum overflow');
+        require(sum <= type(uint224).max, 'FixedPoint::muluq: sum overflow');
 
         return uq112x112(uint224(sum));
     }
@@ -95,30 +95,30 @@ library FixedPoint {
         if (self._x == other._x) {
             return uq112x112(uint224(Q112));
         }
-        if (self._x <= uint144(-1)) {
+        if (self._x <= type(uint144).max) {
             uint256 value = (uint256(self._x) << RESOLUTION) / other._x;
-            require(value <= uint224(-1), 'FixedPoint::divuq: overflow');
+            require(value <= type(uint224).max, 'FixedPoint::divuq: overflow');
             return uq112x112(uint224(value));
         }
 
         uint256 result = FullMath.mulDiv(Q112, self._x, other._x);
-        require(result <= uint224(-1), 'FixedPoint::divuq: overflow');
+        require(result <= type(uint224).max, 'FixedPoint::divuq: overflow');
         return uq112x112(uint224(result));
     }
 
     // returns a UQ112x112 which represents the ratio of the numerator to the denominator
-    // can be lossy
+    // lossy if either numerator or denominator is greater than 112 bits
     function fraction(uint256 numerator, uint256 denominator) internal pure returns (uq112x112 memory) {
         require(denominator > 0, 'FixedPoint::fraction: division by zero');
         if (numerator == 0) return FixedPoint.uq112x112(0);
 
-        if (numerator <= uint144(-1)) {
+        if (numerator <= type(uint144).max) {
             uint256 result = (numerator << RESOLUTION) / denominator;
-            require(result <= uint224(-1), 'FixedPoint::fraction: overflow');
+            require(result <= type(uint224).max, 'FixedPoint::fraction: overflow');
             return uq112x112(uint224(result));
         } else {
             uint256 result = FullMath.mulDiv(numerator, Q112, denominator);
-            require(result <= uint224(-1), 'FixedPoint::fraction: overflow');
+            require(result <= type(uint224).max, 'FixedPoint::fraction: overflow');
             return uq112x112(uint224(result));
         }
     }
@@ -135,7 +135,7 @@ library FixedPoint {
     // square root of a UQ112x112
     // lossy between 0/1 and 40 bits
     function sqrt(uq112x112 memory self) internal pure returns (uq112x112 memory) {
-        if (self._x <= uint144(-1)) {
+        if (self._x <= type(uint144).max) {
             return uq112x112(uint224(Babylonian.sqrt(uint256(self._x) << 112)));
         }
 
